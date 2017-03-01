@@ -95,6 +95,8 @@ class Select extends Component {
         <input
           type="text"
           ref={c => this.searchInput = c}
+          defaultValue="Happy New Year"
+          maxLength={8}
         />
       </div>
     );
