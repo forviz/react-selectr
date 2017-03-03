@@ -1,9 +1,9 @@
 const expect = require('chai').expect;
-const BetterImg = require('./index');
+const Select = require('../src/index');
 
-describe('BetterImg', function() {
-  describe('all', function() {
-    it('should be an array of value|label', function(){
+describe('Select', function() {
+  describe('temp', function() {
+    it('true should be true', function(){
       expect(true).to.equal(true);
     });
   });
