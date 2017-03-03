@@ -6,12 +6,51 @@ import _find from 'lodash/find';
 import OptionGroup from './OptionGroup';
 import Option from './Option';
 
+// Utils
+import isOptionGroup from './utils/isOptionGroup';
+
 const prefix = 'rselectr';
 
-const styles = {
+export const styles = {
   container: {
+
+  },
+  control: {
+    position: 'relative',
     border: '1px solid #ececec',
-    'borderRadius': 4,
+    borderRadius: 4,
+    padding: '6px 12px',
+  },
+  searchInputContainer: {
+    borderBottom: '1px solid #ccc',
+  },
+  searchInput: {
+    width: '100%',
+    padding: '6px 12px',
+    borderRadius: 2,
+    outline: 'none',
+    border: '1px solid #ececec',
+    boxShadow: 'none',
+  },
+  searchInputHidden: {
+    display: 'none',
+  },
+  menu: {
+    padding: 8,
+    border: '1px solid #ececec',
+    borderRadius: 4,
+    position: 'absolute',
+    zIndex: 1,
+    background: '#fff',
+    width: '100%',
+  },
+  option: {
+    padding: '6px 12px',
+  },
+  optionWithFocus: {
+    background: '#5897fb',
+  },
+  optionGroup: {
     padding: '6px 12px',
   }
 }
@@ -46,13 +85,14 @@ class Select extends Component {
     searchable: true,
     openOnFocus: true,
     openAfterFocus: false,
-    numSection: 1,
+    placeholder: 'Select...',
   }
 
   state = {
     isOpen: false,
     isFocused: false,
     isPseudoFocused: false,
+    focusAtIndex: 0, // indexToFocus
   }
 
   /* Detect click Outside */
@@ -60,8 +100,8 @@ class Select extends Component {
     if (this.component.contains(e.target)) return;
     this.setState({ isOpen: false });
   }
-  componentDidMount() { document.body.addEventListener('mousedown', this._handleDetectClickOutside) }
-  componentWillUnmount() { document.body.removeEventListener('mousedown', this._handleDetectClickOutside) }
+  componentDidMount() { document.addEventListener('mousedown', this._handleDetectClickOutside) }
+  componentWillUnmount() { document.removeEventListener('mousedown', this._handleDetectClickOutside) }
   /* End of Detect click Outside */
 
 
@@ -78,12 +118,46 @@ class Select extends Component {
     this.setState({
       isOpen: true,
     });
-    this.searchInput.focus();
   }
 
   handleCloseMenu = () => {
     this.setState({
       isOpen: false,
+    });
+  }
+
+  handleKeyDown = (event) => {
+    console.log('handleKeyDown', event.keyCode);
+		if (this.props.disabled) return;
+
+		if (typeof this.props.onInputKeyDown === 'function') {
+			this.props.onInputKeyDown(event);
+			if (event.defaultPrevented) {
+				return;
+			}
+		}
+
+		switch (event.keyCode) {
+
+			case 38: // up
+				this.focusAtOption(this.state.focusAtIndex - 1);
+			break;
+			case 40: // down
+				this.focusAtOption(this.state.focusAtIndex + 1);
+			break;
+			default: return;
+		}
+		event.preventDefault();
+	}
+
+  focusAtOption = (toIndex) => {
+    let _targetIndex;
+    if (toIndex < 0) _targetIndex = 0;
+    else if (toIndex > this.props.options.length - 1) _targetIndex = this.props.options.length - 1;
+    else _targetIndex = toIndex;
+
+    this.setState({
+      focusAtIndex: targetIndex,
     });
   }
 
@@ -108,9 +182,11 @@ class Select extends Component {
 
   renderSearchInput = () => {
     return (
-      <div>
+      <div className={`${prefix}-searchInput-wrapper`} style={styles.searchInputContainer}>
         <input
           type="text"
+          autoFocus
+          style={styles.searchInput}
           ref={c => this.searchInput = c}
         />
       </div>
@@ -125,17 +201,23 @@ class Select extends Component {
     const { options, label } = optgroup;
     return (
       <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-        {_map(options, (option, index) => this.renderOption(option, index))}
+        {this.renderOptions(options)}
       </OptionGroup>
     );
+  }
+
+  renderOptions = (options) => {
+    return _map(options, (option, index) => this.renderOption(option, index));
   }
 
   renderOption = (option, index) => {
     const _label = option.label || option;
     const _value = option.value || option;
+    const { focusAtIndex } = this.state;
     return (
       <Option
         key={`option-${_value}-${index}`}
+        isFocus={focusAtIndex === index}
         index={index}
         prefix={prefix}
         label={_label}
@@ -146,7 +228,7 @@ class Select extends Component {
   }
 
   render() {
-    const { value, options } = this.props;
+    const { value, options, placeholder } = this.props;
     const selectedOption = _find(options, option => option.value === value);
     const { isOpen } = this.state;
 
@@ -158,13 +240,17 @@ class Select extends Component {
       >
         <div
           className={`${prefix}-control`}
-          onMouseDown={this.handleMouseDown}
-        >{value || 'Select a country'}</div>
+          style={styles.control}
+          onKeyDown={this.handleKeyDown}
+					onMouseDown={this.handleMouseDown}
+        >
+          {value || placeholder}
+        </div>
         {
           isOpen &&
-            <div className={`${prefix}-menu`}>
+            <div className={`${prefix}-menu`} style={styles.menu}>
               { this.renderSearchInput() }
-              { this.renderOptionGroups(options) }
+              { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
             </div>
         }
       </div>
