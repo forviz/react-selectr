@@ -1,23 +1,26 @@
 {
-  "name": "react-select2",
+  
+  "name": "react-selectr",
   "version": "0.0.0-development",
-  "description": "A reimplementation for select2 in react",
-  "main": "dist/index.js",
+  "description": "A select component for react, packed with power.",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Doppy/react-selectr.git"
+    "url": "git+https://github.com/forviz/react-selectr.git"
   },
   "bugs": {
-    "url": "https://github.com/Doppy/react-selectr/issues"
+    "url": "https://github.com/forviz/react-selectr/issues"
   },
-  "homepage": "https://github.com/Doppy/react-selectr",
+  "homepage": "https://github.com/forviz/react-selectr",
   "scripts": {
     "prepush": "npm run test",
     "commit": "git-cz",
     "dev": "cross-env NODE_ENV=development node server.js",
     "test": "cross-env NODE_ENV=test mocha test/index.spec.js --compilers js:babel-register",
-    "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=production babel --copy-files --out-dir dist src",
+    "clean": "rimraf lib dist",
+    "build": "babel src --out-dir lib",
+    "build:umd": "webpack src/index.js dist/react-selectr.js && cross-env NODE_ENV=production webpack src/index.js dist/react-selectr.min.js",
+    "prepublish": "npm run clean && npm run build && npm run build:umd",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "keywords": [
@@ -28,6 +31,7 @@
   "author": "Pitipat Srichairat",
   "license": "MIT",
   "files": [
+    "lib",
     "dist",
     "README.md"
   ],

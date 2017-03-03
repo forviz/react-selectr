@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'sourcemap',
   entry: [
-    './src/BetterImg.js',
+    './dev/app.js',
   ],
   output: {
     path: path.join(__dirname, 'dist'),
