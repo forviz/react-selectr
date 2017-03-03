@@ -22,10 +22,6 @@ module.exports = {
     publicPath: '/static/',
   },
   plugins: [
-    // new webpack.ProvidePlugin({
-      // React: 'react',
-      // _: 'lodash',
-    // }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
@@ -38,5 +34,11 @@ module.exports = {
     loaders: [
       { test: /\.jsx?$/, loaders: ['babel-loader'], exclude: /node_modules/, include: __dirname },
     ],
+  },
+  resolve: {
+    alias: {
+      'react-selectr': path.join(__dirname, 'src')
+    },
+    extensions: ['.js']
   },
 };
