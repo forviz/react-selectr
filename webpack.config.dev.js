@@ -13,7 +13,7 @@ module.exports = {
       'react-hot-loader/patch',
       // listen to code updates emitted by hot middleware:
       'webpack-hot-middleware/client',
-      './dev/app',
+      './example/app',
     ],
   },
   output: {
