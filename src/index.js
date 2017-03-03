@@ -8,6 +8,14 @@ import Option from './Option';
 
 const prefix = 'rselectr';
 
+const styles = {
+  container: {
+    border: '1px solid #ececec',
+    'borderRadius': 4,
+    padding: '6px 12px',
+  }
+}
+
 class Select extends Component {
 
   static displayName = prefix;
@@ -104,8 +112,6 @@ class Select extends Component {
         <input
           type="text"
           ref={c => this.searchInput = c}
-          defaultValue="Happy New Year"
-          maxLength={8}
         />
       </div>
     );
@@ -148,6 +154,7 @@ class Select extends Component {
       <div
         className={`${prefix}-container`}
         ref={c => this.component = c}
+        style={styles.container}
       >
         <div
           className={`${prefix}-control`}

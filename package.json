@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/Doppy/react-selectr",
   "scripts": {
+    "prepush": "npm run test",
     "commit": "git-cz",
     "dev": "cross-env NODE_ENV=development node server.js",
     "test": "cross-env NODE_ENV=test mocha test/index.spec.js --compilers js:babel-register",
