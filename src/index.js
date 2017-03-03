@@ -13,14 +13,24 @@ class Select extends Component {
   static displayName = prefix;
 
   static propTypes = {
+    // Options
     disabled: PropTypes.bool,
+    multiple: PropTypes.bool,
     searchable: PropTypes.bool,
     value: PropTypes.string,
     options: PropTypes.array,
-    onChange: PropTypes.func,
-    numSection: PropTypes.number,
+    placeholder: PropTypes.string,
     openOnFocus: PropTypes.bool,          // always open options menu on focus
     openAfterFocus: PropTypes.bool,
+
+    // Events
+    filterOption: PropTypes.func,   // function to filer an option
+    filterOptions: PropTypes.func,  // function to filer options
+    onChange: PropTypes.func,
+
+    onInputChange: PropTypes.func,
+    onInputKeydown: PropTypes.func,
+
   }
 
   static defaultProps = {
@@ -69,7 +79,6 @@ class Select extends Component {
     });
   }
 
-  // Credit: react-select
   handleMouseDown = (event) => {
 		// if the event was triggered by a mousedown and not the primary
 		// button, or if the component is disabled, ignore it.

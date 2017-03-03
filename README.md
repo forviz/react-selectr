@@ -8,3 +8,4 @@ A select component for react, packed with power.
 - custom render Option, Value
 - Play nicely with huge dataset
 - User friendly across devices and screens
+- SUGGESTIONS WELCOME HERE
