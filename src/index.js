@@ -90,11 +90,10 @@ class Select extends Component {
     /* Multiple */
     if (multiple) {
 
-      const multipleValueArray = getValueArray(value);
-      const multipleValueCurrent = [...multipleValueArray, ...currentValue];
-      const multipleValueString = getValueString(multipleValueCurrent);
-      const multipleValueArrayOption = multipleValueCurrent.map(mv => getValueSelected(options, mv));
-      _value = extractValueOption ? multipleValueArrayOption : multipleValueString;
+      const multipleValue = [...getValueArray(value), ...currentValue]
+      const multipleValueOption = multipleValue.map(mv => getValueSelected(options, mv));
+      const multipleValueString = getValueString(multipleValue);
+      _value = extractValueOption ? multipleValueOption : multipleValueString ;
       onChange(_value);
 
     } else {
@@ -200,11 +199,10 @@ class Select extends Component {
       options,
     } = this.props;
     
-    const multipleValueArray = getValueArray(value);
-    const multipleValueArrayOption = multipleValueArray.map(mv => getValueSelected(options, mv));
-    const valueOption = v => v.value !== valueToDelete;
-    const valueString = v => v !== valueToDelete;
-    const _value = extractValueOption ? multipleValueArrayOption.filter(valueOption) : getValueString(multipleValueArray.filter(valueString));
+    const multipleValue = getValueArray(value);
+    const multipleValueOptions = multipleValue.map(mv => getValueSelected(options, mv)).filter(v => v.value !== valueToDelete);
+    const multipleValueString = getValueString(multipleValue.filter(v => v !== valueToDelete));
+    const _value = extractValueOption ? multipleValueOptions : multipleValueString;
     onChange(_value);
   }
 
