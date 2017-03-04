@@ -20,7 +20,7 @@ import { pureRender } from './utils';
         </div>
       )
     }
-    return (<div className={`${PREFIX}-value`}>{this.props.children}</div>);
+    return this.props.children;
   }
 
   render() {
