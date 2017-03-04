@@ -81,8 +81,8 @@ $orange: #f17e39;
     display: inline-block;
     vertical-align: top;
     border-radius: 5px;
-    margin: 3px 3px 3px 0;
-    height: 26px;
+    margin-right: 4px;
+    // height: 26px;
   }
   &-value-item{}
   &-value-delete{
@@ -93,6 +93,7 @@ $orange: #f17e39;
     background: $orange;
     color: #fff;
     height: 26px;
+    margin: 2px 0;
   }
   &-value{
     display: inline-block;
@@ -101,5 +102,6 @@ $orange: #f17e39;
     background: rgba($orange, 0.8);
     color: #fff;
     height: 26px;
+    margin: 2px 0;
   }
 }
