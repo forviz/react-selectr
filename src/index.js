@@ -6,19 +6,71 @@ import _find from 'lodash/find';
 import OptionGroup from './OptionGroup';
 import Option from './Option';
 
-const prefix = 'rselectr';
+// Utils
+import isOptionGroup from './utils/isOptionGroup';
+import getOptionValue from './utils/getOptionValue';
 
-const styles = {
+export const PREFIX = 'rselectr';
+
+export const styles = {
   container: {
+
+  },
+  control: {
+    position: 'relative',
     border: '1px solid #ececec',
-    'borderRadius': 4,
+    borderRadius: 4,
     padding: '6px 12px',
+  },
+  menu: {
+    paddingTop: 50,
+    maxHeight: 300,
+    overflow: 'scroll',
+    border: '1px solid #ececec',
+    borderRadius: 4,
+    position: 'absolute',
+    zIndex: 1,
+    background: '#fff',
+    width: '100%',
+  },
+  searchInputContainer: {
+    padding: '6px 12px',
+    borderBottom: '1px solid #ececec',
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    left: 0,
+  },
+  searchInput: {
+    width: '100%',
+    padding: '6px 12px',
+    borderRadius: 2,
+    outline: 'none',
+    border: '1px solid #ececec',
+    WebkitBoxShadow: 'none',
+    boxShadow: 'none',
+  },
+  searchInputHidden: {
+    display: 'none',
+  },
+  option: {
+    padding: '8px 12px',
+  },
+  optionWithFocus: {
+    background: '#5897fb',
+    color: '#fff',
+  },
+  optionGroup: {
+    padding: '6px 12px',
+  },
+  optionGroupLabel: {
+    fontWeight: 'bold',
   }
 }
 
 class Select extends Component {
 
-  static displayName = prefix;
+  static displayName = PREFIX;
 
   static propTypes = {
     // Options
@@ -46,13 +98,14 @@ class Select extends Component {
     searchable: true,
     openOnFocus: true,
     openAfterFocus: false,
-    numSection: 1,
+    placeholder: 'Select...',
   }
 
   state = {
     isOpen: false,
     isFocused: false,
     isPseudoFocused: false,
+    focusAtIndex: 0, // indexToFocus
   }
 
   /* Detect click Outside */
@@ -60,12 +113,12 @@ class Select extends Component {
     if (this.component.contains(e.target)) return;
     this.setState({ isOpen: false });
   }
-  componentDidMount() { document.body.addEventListener('mousedown', this._handleDetectClickOutside) }
-  componentWillUnmount() { document.body.removeEventListener('mousedown', this._handleDetectClickOutside) }
+  componentDidMount() { document.addEventListener('mousedown', this._handleDetectClickOutside) }
+  componentWillUnmount() { document.removeEventListener('mousedown', this._handleDetectClickOutside) }
   /* End of Detect click Outside */
 
 
-  handleClickOption = (value) => {
+  handleSelectOption = (value) => {
 
     this.setState({
       isOpen: false,
@@ -74,16 +127,66 @@ class Select extends Component {
     this.props.onChange(value);
   }
 
+  handleSelectOptionAtIndex = (index) => {
+    const option = this.props.options[index];
+    this.handleSelectOption(getOptionValue(option));
+
+  }
+
   handleOpenMenu = () => {
     this.setState({
       isOpen: true,
     });
-    this.searchInput.focus();
   }
 
   handleCloseMenu = () => {
     this.setState({
       isOpen: false,
+    });
+  }
+
+  handleKeyDown = (event) => {
+    if (this.props.disabled) return;
+
+		if (typeof this.props.onInputKeyDown === 'function') {
+			this.props.onInputKeyDown(event);
+			if (event.defaultPrevented) {
+				return;
+			}
+		}
+
+		switch (event.keyCode) {
+
+			case 38: // up
+				this.focusAtOption(this.state.focusAtIndex - 1);
+			  break;
+			case 40: // down
+				this.focusAtOption(this.state.focusAtIndex + 1);
+			  break;
+      case 13: // enter
+				if (!this.state.isOpen) return;
+				event.stopPropagation();
+				this.handleSelectOptionAtIndex(this.state.focusAtIndex);
+			  break;
+			case 27: // escape
+				if (this.state.isOpen) {
+					this.handleCloseMenu();
+					event.stopPropagation();
+				}
+			  break;
+			default: return;
+		}
+		event.preventDefault();
+	}
+
+  focusAtOption = (toIndex) => {
+    let _targetIndex;
+    if (toIndex < 0) _targetIndex = 0;
+    else if (toIndex > this.props.options.length - 1) _targetIndex = this.props.options.length - 1;
+    else _targetIndex = toIndex;
+
+    this.setState({
+      focusAtIndex: _targetIndex,
     });
   }
 
@@ -108,9 +211,11 @@ class Select extends Component {
 
   renderSearchInput = () => {
     return (
-      <div>
+      <div className={`${PREFIX}-searchInput-wrapper`} style={styles.searchInputContainer}>
         <input
           type="text"
+          autoFocus
+          style={styles.searchInput}
           ref={c => this.searchInput = c}
         />
       </div>
@@ -125,46 +230,59 @@ class Select extends Component {
     const { options, label } = optgroup;
     return (
       <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-        {_map(options, (option, index) => this.renderOption(option, index))}
+        {this.renderOptions(options)}
       </OptionGroup>
     );
+  }
+
+  renderOptions = (options) => {
+    return _map(options, (option, index) => this.renderOption(option, index));
   }
 
   renderOption = (option, index) => {
     const _label = option.label || option;
     const _value = option.value || option;
+    const { focusAtIndex } = this.state;
     return (
       <Option
         key={`option-${_value}-${index}`}
+        isFocus={focusAtIndex === index}
         index={index}
-        prefix={prefix}
         label={_label}
         value={_value}
-        onSelect={this.handleClickOption}
+        onSelect={this.handleSelectOption}
       />
     );
   }
 
   render() {
-    const { value, options } = this.props;
+    const { value, options, placeholder } = this.props;
     const selectedOption = _find(options, option => option.value === value);
     const { isOpen } = this.state;
 
     return (
       <div
-        className={`${prefix}-container`}
+        className={`${PREFIX}-container`}
         ref={c => this.component = c}
         style={styles.container}
       >
         <div
-          className={`${prefix}-control`}
+          className={`${PREFIX}-control`}
+          style={styles.control}
+          tabIndex={0}
           onMouseDown={this.handleMouseDown}
-        >{value || 'Select a country'}</div>
+        >
+          {value || placeholder}
+        </div>
         {
           isOpen &&
-            <div className={`${prefix}-menu`}>
+            <div
+              className={`${PREFIX}-menu`}
+              style={styles.menu}
+              onKeyDown={this.handleKeyDown}
+  					>
               { this.renderSearchInput() }
-              { this.renderOptionGroups(options) }
+              { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
             </div>
         }
       </div>

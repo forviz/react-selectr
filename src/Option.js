@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { PREFIX, styles } from './index';
 
 export default class Option extends Component {
 
@@ -7,9 +8,9 @@ export default class Option extends Component {
       section: PropTypes.number,
       row: PropTypes.number,
     }),
-    prefix: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string,
+    isFocus: PropTypes.bool,
   }
 
   handleClickOption = (e) => {
@@ -17,10 +18,17 @@ export default class Option extends Component {
   }
 
   render() {
-    const { prefix, label } = this.props;
+    const { label, isFocus } = this.props;
+
+    const style = {
+      ...styles.option,
+      ...isFocus && styles.optionWithFocus
+    };
+
     return (
       <div
-        className={`${prefix}-option`}
+        className={`${PREFIX}-option`}
+        style={style}
         onClick={this.handleClickOption}
       >{label}</div>
     );

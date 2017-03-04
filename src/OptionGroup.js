@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { PREFIX, styles } from './index';
 
 export default class OptionGroup extends Component {
 
@@ -7,18 +8,19 @@ export default class OptionGroup extends Component {
       section: PropTypes.number,
       row: PropTypes.number,
     }),
-    prefix: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string,
   }
 
   render() {
-    const { prefix, label } = this.props;
+    const { label } = this.props;
+
     return (
       <div
-        className={`${prefix}-option`}
+        className={`${PREFIX}-option`}
+        style={styles.optionGroup}
       >
-        <span>{label}</span>
+        <span style={styles.optionGroupLabel}>{label}</span>
         {this.props.children}
       </div>
     );
