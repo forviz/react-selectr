@@ -1,56 +1,32 @@
-// const createRegExp = (str) => {
-//   const arrayOfWords = str.split(' ');
-//   console.log('arrayOfWords', arrayOfWords);
-//   let pattern = '';
-//   for (const word in arrayOfWords) {
-//     pattern += `${word}+\\s?`
-//   }
-//
-//   '(cat)+\\s?(mat)|(mat)+\\s?(cat)';
-//   return pattern;
-// };
-
 const createRegExp = str => str;
+// regex pattern '(cat)+\\s?(mat)|(mat)+\\s?(cat)';
+
 
  /*
-   searchValue = Mondit Pond
-   then find option that
-     1. has mondit and Pond
+   isContain function to check searchValue contain in option or not ?
+   Note*
+     all of searchValue seperated by space (' ') should be contained
  */
- const isContain = (option, searchValue, filterOption) => {
-   const searchCriterias = searchValue.split(' '); // split by space
-   let found = true;
-   for (const i in searchCriterias) {
-     const searchCriteria = searchCriterias[i];
-     if (!filterOption) {
-      //  console.log('filterOption by default', option, searchValue);
-       const regex = new RegExp(createRegExp(searchCriteria), 'gi');
-       found = regex.test(option.label);
-        //  console.log('================');
-        //  console.log('label', option.label);
-        //  console.log('regex', regex);
-        //  console.log('isContain', found);
-        //  console.log('================');
-     } else {
-      //  console.log('filterOption by props', option, searchValue, filterOption);
-       found = filterOption(option, searchValue);
-       //  console.log('================');
-       //  console.log('label', option.label);
-       //  console.log('regex', regex);
-       //  console.log('isContain', found);
-       //  console.log('================');
-     }
-     if (!found) return found;
-   }
-   return found;
- };
-
- /*
-  * filter options by searchValue then return
-  */
-
-const smartFilterOptions = (options, searchValue, filterOption) => {
-  return options.filter(option => isContain(option, searchValue, filterOption));
+const isContain = (option, searchValue, filterOption) => {
+  const searchCriterias = searchValue.split(' '); // split by space
+  let found = true;
+  for (const i in searchCriterias) {
+    const searchCriteria = searchCriterias[i];
+    if (!filterOption) {
+      const regex = new RegExp(createRegExp(searchCriteria), 'gi');
+      found = regex.test(option.label);
+    } else {
+      found = filterOption(option, searchValue);
+    }
+    if (!found) return false;
+  }
+  return true;
 };
+
+/*
+ * filter options by searchValue then return
+ */
+const smartFilterOptions = (options, searchValue, filterOption) =>
+  options.filter(option => isContain(option, searchValue, filterOption));
 
 export default smartFilterOptions;
