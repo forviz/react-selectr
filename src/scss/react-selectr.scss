@@ -67,8 +67,11 @@ $orange: #f17e39;
   &-option{
     padding: 8px 12px;
     cursor: pointer;
-    &:hover, &.isFocus{
+    &.isFocus{
       background-color: rgba($orange, 0.1);
+    }
+    &.isSelected{
+      display: none;
     }
   }
   &-optionGroup{
