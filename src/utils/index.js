@@ -1,3 +1,4 @@
+export filterOptions from './filterOptions';
 export getOptionValue from './getOptionValue';
 export getIndexedOptions from './getIndexedOptions';
 export getValueArray from './getValueArray';

@@ -15,6 +15,7 @@ import {
   getValueArray,
   getValueString,
   getValueSelected,
+  filterOptions,
 } from './utils';
 
 export const PREFIX = 'rselectr';
@@ -58,6 +59,7 @@ class Select extends Component {
     isFocused: false,
     isPseudoFocused: false,
     focusAtIndex: 0, // indexToFocus
+    searchValue: '', // searchValue for filter options
   }
 
   /* Detect click Outside */
@@ -124,6 +126,12 @@ class Select extends Component {
   handleCloseMenu = () => {
     this.setState({
       isOpen: false,
+    });
+  }
+
+  handleFilterOption = (e) => {
+    this.setState({
+      searchValue: e.target.value,
     });
   }
 
@@ -199,7 +207,7 @@ class Select extends Component {
       onChange,
       options,
     } = this.props;
-    
+
     const multipleValueArray = getValueArray(value);
     const multipleValueArrayOption = multipleValueArray.map(mv => getValueSelected(options, mv));
     const valueOption = v => v.value !== valueToDelete;
@@ -216,6 +224,7 @@ class Select extends Component {
           type="text"
           autoFocus
           ref={c => this.searchInput = c}
+          onChange={this.handleFilterOption}
         />
       </div>
     );
@@ -235,7 +244,8 @@ class Select extends Component {
   }
 
   renderOptions = (options) => {
-    return _map(options, (option, index) => this.renderOption(option, index));
+    const { searchValue } = this.state;
+    return _map(filterOptions(options, searchValue), (option, index) => this.renderOption(option, index));
   }
 
   renderOption = (option, index) => {
@@ -263,7 +273,7 @@ class Select extends Component {
     /* Multiple */
     if (multiple) {
       const multipleValue = getValueArray(value);
-      return multipleValue.map((v, i) => 
+      return multipleValue.map((v, i) =>
         <Value
           key={`${PREFIX}-${v}-${i}`}
           value={v}
