@@ -16,7 +16,7 @@
     "commit": "git-cz",
     "dev": "cross-env NODE_ENV=development node server.js",
     "test": "cross-env NODE_ENV=test mocha ./test/**/*.spec.js --compilers js:babel-register",
-    "test:dev": "cross-env NODE_ENV=test mocha ./test/**/*.spec.js --compilers js:babel-register --watch",
+    "test:dev": "npm run test -- --watch",
     "clean": "rimraf lib dist",
     "build": "babel src --out-dir lib",
     "build:umd": "webpack src/index.js dist/react-selectr.js && cross-env NODE_ENV=production webpack src/index.js dist/react-selectr.min.js",
