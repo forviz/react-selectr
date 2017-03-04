@@ -15,7 +15,8 @@
     "prepush": "npm run test",
     "commit": "git-cz",
     "dev": "cross-env NODE_ENV=development node server.js",
-    "test": "cross-env NODE_ENV=test mocha test/index.spec.js --compilers js:babel-register",
+    "test": "cross-env NODE_ENV=test mocha test/**/*.spec.js --compilers js:babel-register",
+    "test:watch": "npm run test -- --watch",
     "clean": "rimraf lib dist",
     "build": "babel src --out-dir lib",
     "build:umd": "webpack src/index.js dist/react-selectr.js && cross-env NODE_ENV=production webpack src/index.js dist/react-selectr.min.js",
@@ -73,7 +74,8 @@
   },
   "dependencies": {
     "lodash": "^4.17.4",
-    "react-addons-shallow-compare": "^15.4.2"
+    "react-addons-shallow-compare": "^15.4.2",
+    "recompose": "^0.22.0"
   },
   "peerDependencies": {
     "react": "^15.4.2",

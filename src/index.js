@@ -4,12 +4,17 @@ import _map from 'lodash/map';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 
+import compose from 'recompose/compose';
+import mapProps from 'recompose/mapProps';
+
 import OptionGroup from './OptionGroup';
 import Option from './Option';
 import Value from './Value';
 
 // Utils
 import {
+  mapOptions,
+  mapOptionGroups,
   isOptionGroup,
   getOptionValue,
   getValueArray,
@@ -18,6 +23,16 @@ import {
 } from './utils';
 
 export const PREFIX = 'rselectr';
+
+const enhance = compose(
+  mapProps(props => {
+    return {
+      ...props,
+      options: mapOptions(props.options),
+      groups: mapOptionGroups(props.options),
+    }
+  }),
+);
 
 class Select extends Component {
 
@@ -30,7 +45,12 @@ class Select extends Component {
     searchable: PropTypes.bool,
     extractValueOption: PropTypes.bool,
     value: PropTypes.string,
-    options: PropTypes.array,
+    options: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.string,
+      label: PropTypes.string,
+      groupIndex: PropTypes.number,
+    })),
+    groups: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
     openOnFocus: PropTypes.bool,          // always open options menu on focus
     openAfterFocus: PropTypes.bool,
@@ -199,7 +219,7 @@ class Select extends Component {
       onChange,
       options,
     } = this.props;
-    
+
     const multipleValueArray = getValueArray(value);
     const multipleValueArrayOption = multipleValueArray.map(mv => getValueSelected(options, mv));
     const valueOption = v => v.value !== valueToDelete;
@@ -221,26 +241,35 @@ class Select extends Component {
     );
   }
 
-  renderOptionGroups = (options) => {
-    return _map(options, (optgroup, groupIndex) => this.renderOptionGroup(optgroup, groupIndex));
+  // renderOptionGroups = (options) => {
+  //   return _map(options, (optgroup, groupIndex) => this.renderOptionGroup(optgroup, groupIndex));
+  // }
+  //
+  // renderOptionGroup = (optgroup, groupIndex) => {
+  //   const { options, label } = optgroup;
+  //   return (
+  //     <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
+  //       {this.renderOptions(options)}
+  //     </OptionGroup>
+  //   );
+  // }
+
+  renderOptions = (groups, options) => {
+    return _map(groups, (label, groupIndex) => {
+      const groupOptions = _.filter(options, option => option.groupIndex === groupIndex);
+      return (
+        <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
+          { _map(groupOptions, option => this.renderOption(option)) }
+        </OptionGroup>
+      );
+    })
+    // return _map(options, (option, index) => this.renderOption(option, index));
   }
 
-  renderOptionGroup = (optgroup, groupIndex) => {
-    const { options, label } = optgroup;
-    return (
-      <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-        {this.renderOptions(options)}
-      </OptionGroup>
-    );
-  }
-
-  renderOptions = (options) => {
-    return _map(options, (option, index) => this.renderOption(option, index));
-  }
-
-  renderOption = (option, index) => {
+  renderOption = (option) => {
     const _label = option.label || option;
     const _value = option.value || option;
+    const index = option.optionIndex;
     const { focusAtIndex } = this.state;
     return (
       <Option
@@ -263,7 +292,7 @@ class Select extends Component {
     /* Multiple */
     if (multiple) {
       const multipleValue = getValueArray(value);
-      return multipleValue.map((v, i) => 
+      return multipleValue.map((v, i) =>
         <Value
           key={`${PREFIX}-${v}-${i}`}
           value={v}
@@ -285,6 +314,7 @@ class Select extends Component {
 
     const {
       value,
+      groups,
       options,
       placeholder,
       multiple,
@@ -304,7 +334,7 @@ class Select extends Component {
             <div className={`${PREFIX}-menu`} onKeyDown={this.handleKeyDown}>
               { this.renderSearchInput() }
               <div className={`${PREFIX}-option-list`}>
-                { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
+                { this.renderOptions(groups, options)}
               </div>
             </div>
         }
@@ -313,4 +343,4 @@ class Select extends Component {
   }
 };
 
-export default Select;
+export default enhance(Select);
