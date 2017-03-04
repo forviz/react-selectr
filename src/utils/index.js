@@ -1,4 +1,4 @@
-export filterOptions from './filterOptions';
+export smartFilterOptions from './smartFilterOptions';
 export getOptionValue from './getOptionValue';
 export getIndexedOptions from './getIndexedOptions';
 export getValueArray from './getValueArray';

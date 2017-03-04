@@ -15,7 +15,8 @@ import {
   getValueArray,
   getValueString,
   getValueSelected,
-  filterOptions,
+  smartFilterOptions,
+  getOptions,
 } from './utils';
 
 export const PREFIX = 'rselectr';
@@ -216,6 +217,15 @@ class Select extends Component {
     onChange(_value);
   }
 
+  selectOptionsToRender = (options, searchValue, { searchable, filterOptions, filterOption }) => {
+    console.log('selectOptionsToRender', options, searchValue, searchable, filterOptions, filterOption);
+    if (!searchable) return options;
+    if (filterOptions) return filterOptions(options, searchValue);
+    if (!filterOptions && filterOption) return smartFilterOptions(options, searchValue, filterOption);
+    if (!filterOptions && !filterOption) return smartFilterOptions(options, searchValue);
+    return smartFilterOptions(options, searchValue);
+  }
+
   renderSearchInput = () => {
     return (
       <div className={`${PREFIX}-searchInput-wrapper`}>
@@ -245,7 +255,7 @@ class Select extends Component {
 
   renderOptions = (options) => {
     const { searchValue } = this.state;
-    return _map(filterOptions(options, searchValue), (option, index) => this.renderOption(option, index));
+    return _map(this.selectOptionsToRender(options, searchValue, this.props), (option, index) => this.renderOption(option, index));
   }
 
   renderOption = (option, index) => {
