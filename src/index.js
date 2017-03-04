@@ -2,71 +2,22 @@ import React, { Component, PropTypes } from 'react';
 import _pick from 'lodash/pick';
 import _map from 'lodash/map';
 import _find from 'lodash/find';
+import _get from 'lodash/get';
 
 import OptionGroup from './OptionGroup';
 import Option from './Option';
+import Value from './Value';
 
 // Utils
-import isOptionGroup from './utils/isOptionGroup';
-import getOptionValue from './utils/getOptionValue';
+import {
+  isOptionGroup,
+  getOptionValue,
+  getValueArray,
+  getValueString,
+  getValueSelected,
+} from './utils';
 
 export const PREFIX = 'rselectr';
-
-export const styles = {
-  container: {
-
-  },
-  control: {
-    position: 'relative',
-    border: '1px solid #ececec',
-    borderRadius: 4,
-    padding: '6px 12px',
-  },
-  menu: {
-    paddingTop: 50,
-    maxHeight: 300,
-    overflow: 'scroll',
-    border: '1px solid #ececec',
-    borderRadius: 4,
-    position: 'absolute',
-    zIndex: 1,
-    background: '#fff',
-    width: '100%',
-  },
-  searchInputContainer: {
-    padding: '6px 12px',
-    borderBottom: '1px solid #ececec',
-    position: 'absolute',
-    width: '100%',
-    top: 0,
-    left: 0,
-  },
-  searchInput: {
-    width: '100%',
-    padding: '6px 12px',
-    borderRadius: 2,
-    outline: 'none',
-    border: '1px solid #ececec',
-    WebkitBoxShadow: 'none',
-    boxShadow: 'none',
-  },
-  searchInputHidden: {
-    display: 'none',
-  },
-  option: {
-    padding: '8px 12px',
-  },
-  optionWithFocus: {
-    background: '#5897fb',
-    color: '#fff',
-  },
-  optionGroup: {
-    padding: '6px 12px',
-  },
-  optionGroupLabel: {
-    fontWeight: 'bold',
-  }
-}
 
 class Select extends Component {
 
@@ -77,6 +28,7 @@ class Select extends Component {
     disabled: PropTypes.bool,
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
+    extractValueOption: PropTypes.bool,
     value: PropTypes.string,
     options: PropTypes.array,
     placeholder: PropTypes.string,
@@ -84,8 +36,8 @@ class Select extends Component {
     openAfterFocus: PropTypes.bool,
 
     // Events
-    filterOption: PropTypes.func,   // function to filer an option
-    filterOptions: PropTypes.func,  // function to filer options
+    filterOption: PropTypes.func,         // function to filer an option
+    filterOptions: PropTypes.func,        // function to filer options
     onChange: PropTypes.func,
 
     onInputChange: PropTypes.func,
@@ -113,24 +65,54 @@ class Select extends Component {
     if (this.component.contains(e.target)) return;
     this.setState({ isOpen: false });
   }
-  componentDidMount() { document.addEventListener('mousedown', this._handleDetectClickOutside) }
-  componentWillUnmount() { document.removeEventListener('mousedown', this._handleDetectClickOutside) }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this._handleDetectClickOutside)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this._handleDetectClickOutside)
+  }
   /* End of Detect click Outside */
 
+  handleSelectOption = (currentValue) => {
 
-  handleSelectOption = (value) => {
+    const {
+      multiple,
+      options,
+      extractValueOption,
+      value,
+      onChange,
+    } = this.props;
 
-    this.setState({
-      isOpen: false,
-    });
+    let _value = '';
 
-    this.props.onChange(value);
+    /* Multiple */
+    if (multiple) {
+
+      const multipleValueArray = getValueArray(value);
+      const multipleValueCurrent = [...multipleValueArray, ...currentValue];
+      const multipleValueString = getValueString(multipleValueCurrent);
+      const multipleValueArrayOption = multipleValueCurrent.map(mv => getValueSelected(options, mv));
+      _value = extractValueOption ? multipleValueArrayOption :multipleValueString;
+      onChange(_value);
+
+    } else {
+
+      _value = extractValueOption ? getValueSelected(options, currentValue) : currentValue;
+      onChange(_value);
+
+      /* Close options */
+      this.setState({
+        isOpen: false,
+      });
+
+    }
   }
 
   handleSelectOptionAtIndex = (index) => {
     const option = this.props.options[index];
     this.handleSelectOption(getOptionValue(option));
-
   }
 
   handleOpenMenu = () => {
@@ -209,13 +191,19 @@ class Select extends Component {
     else this.handleCloseMenu();
 	}
 
+  handleDeleteValue = (valueToDelete) => {
+    const { value, onChange } = this.props;
+    const multipleValueArray = getValueArray(value);
+    onChange(getValueString(multipleValueArray.filter(v => v !== valueToDelete)));
+  }
+
   renderSearchInput = () => {
     return (
-      <div className={`${PREFIX}-searchInput-wrapper`} style={styles.searchInputContainer}>
+      <div className={`${PREFIX}-searchInput-wrapper`}>
         <input
+          className={`${PREFIX}-searchInput`}
           type="text"
           autoFocus
-          style={styles.searchInput}
           ref={c => this.searchInput = c}
         />
       </div>
@@ -255,34 +243,55 @@ class Select extends Component {
     );
   }
 
+  renderValueLabel = (options, value) => {
+    return _get(_find(options, option => option.value === value), 'label', '');
+  }
+
+  renderValue = (options, value, multiple) => {
+
+    /* Multiple */
+    if (multiple) {
+      const multipleValue = getValueArray(value);
+      return multipleValue.map((v, i) => 
+        <Value
+          key={`${PREFIX}-${v}-${i}`}
+          value={v}
+          onDelete={this.handleDeleteValue}
+        >
+          { this.renderValueLabel(options, v) }
+        </Value>
+      )
+    }
+
+    return (<Value value={getOptionValue(value)}>{ this.renderValueLabel(options, getOptionValue(value)) }</Value>);
+  }
+
   render() {
-    const { value, options, placeholder } = this.props;
+    const { value, options, placeholder, multiple } = this.props;
     const selectedOption = _find(options, option => option.value === value);
     const { isOpen } = this.state;
-
     return (
       <div
         className={`${PREFIX}-container`}
         ref={c => this.component = c}
-        style={styles.container}
       >
         <div
           className={`${PREFIX}-control`}
-          style={styles.control}
           tabIndex={0}
           onMouseDown={this.handleMouseDown}
         >
-          {value || placeholder}
+          {value && this.renderValue(options, value, multiple) || placeholder}
         </div>
         {
           isOpen &&
             <div
               className={`${PREFIX}-menu`}
-              style={styles.menu}
               onKeyDown={this.handleKeyDown}
   					>
               { this.renderSearchInput() }
-              { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
+              <div className={`${PREFIX}-option-list`}>
+                { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
+              </div>
             </div>
         }
       </div>

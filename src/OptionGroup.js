@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { PREFIX, styles } from './index';
+import { PREFIX } from './index';
+import { pureRender } from './utils';
 
-export default class OptionGroup extends Component {
+class OptionGroup extends Component {
 
   static propTypes = {
     indexPath: PropTypes.shape({
@@ -17,12 +18,13 @@ export default class OptionGroup extends Component {
 
     return (
       <div
-        className={`${PREFIX}-option`}
-        style={styles.optionGroup}
+        className={`${PREFIX}-optionGroup`}
       >
-        <span style={styles.optionGroupLabel}>{label}</span>
+        <span className={`${PREFIX}-optionGroupLabel`}>{label}</span>
         {this.props.children}
       </div>
     );
   }
 }
+
+export default pureRender(OptionGroup);
