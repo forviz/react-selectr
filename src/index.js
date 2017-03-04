@@ -15,7 +15,7 @@ import {
   getValueArray,
   getValueString,
   getValueSelected,
-  smartFilterOptions,
+  defaultFilterOptions,
   getOptions,
 } from './utils';
 
@@ -221,9 +221,8 @@ class Select extends Component {
     console.log('selectOptionsToRender', options, searchValue, searchable, filterOptions, filterOption);
     if (!searchable) return options;
     if (filterOptions) return filterOptions(options, searchValue);
-    if (!filterOptions && filterOption) return smartFilterOptions(options, searchValue, filterOption);
-    if (!filterOptions && !filterOption) return smartFilterOptions(options, searchValue);
-    return smartFilterOptions(options, searchValue);
+    if (filterOption) return defaultFilterOptions(options, searchValue, filterOption);
+    return defaultFilterOptions(options, searchValue);
   }
 
   renderSearchInput = () => {

@@ -26,7 +26,7 @@ const isContain = (option, searchValue, filterOption) => {
 /*
  * filter options by searchValue then return
  */
-const smartFilterOptions = (options, searchValue, filterOption) =>
+const defaultFilterOptions = (options, searchValue, filterOption) =>
   options.filter(option => isContain(option, searchValue, filterOption));
 
-export default smartFilterOptions;
+export default defaultFilterOptions;

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import smartFilterOptions from '../../src/utils/smartFilterOptions';
+import defaultFilterOptions from '../../src/utils/defaultFilterOptions';
 const expect = require('chai').expect;
 
 const options = [
@@ -13,38 +13,38 @@ const options = [
   },
 ];
 
-describe('smartFilterOptions filter features', function() {
+describe('defaultFilterOptions filter features', function() {
   describe('#filter-001 search by single character', function() {
     it('should return id === pond', function(){
-      const filteredOptions = smartFilterOptions(options, 'j');
+      const filteredOptions = defaultFilterOptions(options, 'j');
       expect(_.get(filteredOptions, '0.value')).to.equal('pond');
     });
   });
   describe('#filter-002 search by single word', function() {
     it('should return id === pond', function(){
-      const filteredOptions = smartFilterOptions(options, 'japanese');
+      const filteredOptions = defaultFilterOptions(options, 'japanese');
       expect(_.get(filteredOptions, '0.value')).to.equal('pond');
     });
   });
   describe('#filter-003 search by two characters', function() {
     it('should return id === pond', function(){
-      const filteredOptions = smartFilterOptions(options, 'Ma');
+      const filteredOptions = defaultFilterOptions(options, 'Ma');
       expect(_.get(filteredOptions, '0.value')).to.equal('pond');
     });
   });
   describe('#filter-004 search by two words', function() {
     it('should return id === pond', function(){
-      const filteredOptions = smartFilterOptions(options, 'japanese salary');
+      const filteredOptions = defaultFilterOptions(options, 'japanese salary');
       expect(_.get(filteredOptions, '0.value')).to.equal('pond');
     });
   });
 });
 
-describe('smartFilterOptions custom filter features', function() {
+describe('defaultFilterOptions custom filter features', function() {
   // describe('#customer-filter-options', function() {
   //   describe('#customer-filter-options-001 search by single character', function() {
   //     it('should return id === pond', function(){
-  //       const filteredOptions = smartFilterOptions(options, 'j');
+  //       const filteredOptions = defaultFilterOptions(options, 'j');
   //       expect(_.get(filteredOptions, '0.value')).to.equal('pond');
   //     });
   //   });
@@ -58,7 +58,7 @@ describe('smartFilterOptions custom filter features', function() {
   describe('#customer-filter-option', function() {
     describe('#customer-filter-option-001 search by single character', function() {
       it('should return id === pond', function(){
-        const filteredOptions = smartFilterOptions(options, 'j', (option, searchValue) => {
+        const filteredOptions = defaultFilterOptions(options, 'j', (option, searchValue) => {
           if (option.label.indexOf(searchValue) >= 0) return true;
           return false;
         });
@@ -67,7 +67,7 @@ describe('smartFilterOptions custom filter features', function() {
     });
     describe('#customer-filter-option-002 search by single word', function() {
       it('should return id === pond', function(){
-        const filteredOptions = smartFilterOptions(options, 'japanese', (option, searchValue) => {
+        const filteredOptions = defaultFilterOptions(options, 'japanese', (option, searchValue) => {
           if (option.label.indexOf(searchValue) >= 0) return true;
           return false;
         });
@@ -76,7 +76,7 @@ describe('smartFilterOptions custom filter features', function() {
     });
     describe('#customer-filter-option-003 search by two characters', function() {
       it('should return id === pond', function(){
-        const filteredOptions = smartFilterOptions(options, 'Ma', (option, searchValue) => {
+        const filteredOptions = defaultFilterOptions(options, 'Ma', (option, searchValue) => {
           if (option.label.indexOf(searchValue) >= 0) return true;
           return false;
         });
@@ -85,7 +85,7 @@ describe('smartFilterOptions custom filter features', function() {
     });
     describe('#customer-filter-option-004 search by two words', function() {
       it('should return id === pond', function(){
-        const filteredOptions = smartFilterOptions(options, 'japanese salary', (option, searchValue) => {
+        const filteredOptions = defaultFilterOptions(options, 'japanese salary', (option, searchValue) => {
           if (option.label.indexOf(searchValue) >= 0) return true;
           return false;
         });
@@ -98,7 +98,7 @@ describe('smartFilterOptions custom filter features', function() {
 //
 //   describe('#case001 search by single character', function() {
 //     it('should return only 1 option', function(){
-//       const filteredOptions = smartFilterOptions(options, 'rice girl', (option, searchValue) => {
+//       const filteredOptions = defaultFilterOptions(options, 'rice girl', (option, searchValue) => {
 //         console.log('test', option.label.indexOf('girl') >= 0);
 //         return option.label.indexOf('girl') >= 0;
 //       });
@@ -107,7 +107,7 @@ describe('smartFilterOptions custom filter features', function() {
 //   });
 //   describe('search by alphabet', function() {
 //     it('should return only 1 option', function(){
-//       const filteredOptions = smartFilterOptions(options, 'rice girl', (option, searchValue) => {
+//       const filteredOptions = defaultFilterOptions(options, 'rice girl', (option, searchValue) => {
 //         console.log('test', option.label.indexOf('girl') >= 0);
 //         return option.label.indexOf('girl') >= 0;
 //       });
