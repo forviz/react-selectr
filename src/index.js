@@ -192,9 +192,13 @@ class Select extends Component {
 	}
 
   handleDeleteValue = (valueToDelete) => {
-    const { value, onChange } = this.props;
+    const { multiple, extractValueOption, value, onChange, options } = this.props;
     const multipleValueArray = getValueArray(value);
-    onChange(getValueString(multipleValueArray.filter(v => v !== valueToDelete)));
+    const multipleValueArrayOption = multipleValueArray.map(mv => getValueSelected(options, mv));
+    const valueOption = v => v.value !== valueToDelete;
+    const valueString = v => v !== valueToDelete;
+    const _value = extractValueOption ? multipleValueArrayOption.filter(valueOption) : getValueString(multipleValueArray.filter(valueString));
+    onChange(_value);
   }
 
   renderSearchInput = () => {
@@ -267,9 +271,11 @@ class Select extends Component {
   }
 
   render() {
+
     const { value, options, placeholder, multiple } = this.props;
     const selectedOption = _find(options, option => option.value === value);
     const { isOpen } = this.state;
+
     return (
       <div
         className={`${PREFIX}-container`}

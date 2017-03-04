@@ -17,7 +17,7 @@ export default class App extends Component {
   state = {
     value1: '',
     value2: '',
-    valueMultiple: 'F,M',
+    valueMultiple: '',
   }
 
   handleChange = (key, value) => {
