@@ -7,16 +7,16 @@ const createRegExp = str => str;
    Note*
      all of searchValue seperated by space (' ') should be contained
  */
-const isContain = (option, searchValue, filterOption) => {
+const isContain = (option, searchValue, filterOption = undefined) => {
   const searchCriterias = searchValue.split(' '); // split by space
   let found = true;
   for (const i in searchCriterias) {
     const searchCriteria = searchCriterias[i];
-    if (!filterOption) {
+    if (filterOption) {
+      found = filterOption(option, searchValue);
+    } else {
       const regex = new RegExp(createRegExp(searchCriteria), 'gi');
       found = regex.test(option.label);
-    } else {
-      found = filterOption(option, searchValue);
     }
     if (!found) return false;
   }

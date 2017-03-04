@@ -220,8 +220,8 @@ class Select extends Component {
   selectOptionsToRender = (options, searchValue, { searchable, filterOptions, filterOption }) => {
     console.log('selectOptionsToRender', options, searchValue, searchable, filterOptions, filterOption);
     if (!searchable) return options;
-    if (filterOptions) return filterOptions(options, searchValue);
-    if (filterOption) return defaultFilterOptions(options, searchValue, filterOption);
+    if (filterOptions && _.isFunction(filterOptions)) return filterOptions(options, searchValue);
+    if (filterOption && _.isFunction(filterOption)) return defaultFilterOptions(options, searchValue, filterOption);
     return defaultFilterOptions(options, searchValue);
   }
 

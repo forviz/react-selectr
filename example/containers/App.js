@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import countries from './countries';
 
-const countriesOptions = _.map(countries, item => {
+const countriesOptions = countries.map((item) => {
   return {
     label: item.country,
     options: item.states,
@@ -13,7 +13,7 @@ const countriesOptions = _.map(countries, item => {
 });
 
 const countriesOptions2 = _.reduce(countries, (accumulator, item, index) => {
-  const states = _.map(item.states, (state) => {
+  const states = item.states.map((state) => {
     return {
       label: state,
       value: state,
