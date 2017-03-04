@@ -8,8 +8,9 @@ import Option from './Option';
 
 // Utils
 import isOptionGroup from './utils/isOptionGroup';
+import getOptionValue from './utils/getOptionValue';
 
-const prefix = 'rselectr';
+export const PREFIX = 'rselectr';
 
 export const styles = {
   container: {
@@ -21,22 +22,10 @@ export const styles = {
     borderRadius: 4,
     padding: '6px 12px',
   },
-  searchInputContainer: {
-    borderBottom: '1px solid #ccc',
-  },
-  searchInput: {
-    width: '100%',
-    padding: '6px 12px',
-    borderRadius: 2,
-    outline: 'none',
-    border: '1px solid #ececec',
-    boxShadow: 'none',
-  },
-  searchInputHidden: {
-    display: 'none',
-  },
   menu: {
-    padding: 8,
+    paddingTop: 50,
+    maxHeight: 300,
+    overflow: 'scroll',
     border: '1px solid #ececec',
     borderRadius: 4,
     position: 'absolute',
@@ -44,20 +33,44 @@ export const styles = {
     background: '#fff',
     width: '100%',
   },
-  option: {
+  searchInputContainer: {
     padding: '6px 12px',
+    borderBottom: '1px solid #ececec',
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    left: 0,
+  },
+  searchInput: {
+    width: '100%',
+    padding: '6px 12px',
+    borderRadius: 2,
+    outline: 'none',
+    border: '1px solid #ececec',
+    WebkitBoxShadow: 'none',
+    boxShadow: 'none',
+  },
+  searchInputHidden: {
+    display: 'none',
+  },
+  option: {
+    padding: '8px 12px',
   },
   optionWithFocus: {
     background: '#5897fb',
+    color: '#fff',
   },
   optionGroup: {
     padding: '6px 12px',
+  },
+  optionGroupLabel: {
+    fontWeight: 'bold',
   }
 }
 
 class Select extends Component {
 
-  static displayName = prefix;
+  static displayName = PREFIX;
 
   static propTypes = {
     // Options
@@ -105,13 +118,19 @@ class Select extends Component {
   /* End of Detect click Outside */
 
 
-  handleClickOption = (value) => {
+  handleSelectOption = (value) => {
 
     this.setState({
       isOpen: false,
     });
 
     this.props.onChange(value);
+  }
+
+  handleSelectOptionAtIndex = (index) => {
+    const option = this.props.options[index];
+    this.handleSelectOption(getOptionValue(option));
+
   }
 
   handleOpenMenu = () => {
@@ -127,8 +146,7 @@ class Select extends Component {
   }
 
   handleKeyDown = (event) => {
-    console.log('handleKeyDown', event.keyCode);
-		if (this.props.disabled) return;
+    if (this.props.disabled) return;
 
 		if (typeof this.props.onInputKeyDown === 'function') {
 			this.props.onInputKeyDown(event);
@@ -141,10 +159,21 @@ class Select extends Component {
 
 			case 38: // up
 				this.focusAtOption(this.state.focusAtIndex - 1);
-			break;
+			  break;
 			case 40: // down
 				this.focusAtOption(this.state.focusAtIndex + 1);
-			break;
+			  break;
+      case 13: // enter
+				if (!this.state.isOpen) return;
+				event.stopPropagation();
+				this.handleSelectOptionAtIndex(this.state.focusAtIndex);
+			  break;
+			case 27: // escape
+				if (this.state.isOpen) {
+					this.handleCloseMenu();
+					event.stopPropagation();
+				}
+			  break;
 			default: return;
 		}
 		event.preventDefault();
@@ -157,7 +186,7 @@ class Select extends Component {
     else _targetIndex = toIndex;
 
     this.setState({
-      focusAtIndex: targetIndex,
+      focusAtIndex: _targetIndex,
     });
   }
 
@@ -182,7 +211,7 @@ class Select extends Component {
 
   renderSearchInput = () => {
     return (
-      <div className={`${prefix}-searchInput-wrapper`} style={styles.searchInputContainer}>
+      <div className={`${PREFIX}-searchInput-wrapper`} style={styles.searchInputContainer}>
         <input
           type="text"
           autoFocus
@@ -219,10 +248,9 @@ class Select extends Component {
         key={`option-${_value}-${index}`}
         isFocus={focusAtIndex === index}
         index={index}
-        prefix={prefix}
         label={_label}
         value={_value}
-        onSelect={this.handleClickOption}
+        onSelect={this.handleSelectOption}
       />
     );
   }
@@ -234,21 +262,25 @@ class Select extends Component {
 
     return (
       <div
-        className={`${prefix}-container`}
+        className={`${PREFIX}-container`}
         ref={c => this.component = c}
         style={styles.container}
       >
         <div
-          className={`${prefix}-control`}
+          className={`${PREFIX}-control`}
           style={styles.control}
-          onKeyDown={this.handleKeyDown}
-					onMouseDown={this.handleMouseDown}
+          tabIndex={0}
+          onMouseDown={this.handleMouseDown}
         >
           {value || placeholder}
         </div>
         {
           isOpen &&
-            <div className={`${prefix}-menu`} style={styles.menu}>
+            <div
+              className={`${PREFIX}-menu`}
+              style={styles.menu}
+              onKeyDown={this.handleKeyDown}
+  					>
               { this.renderSearchInput() }
               { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
             </div>
