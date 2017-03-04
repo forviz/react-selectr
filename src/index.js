@@ -94,7 +94,7 @@ class Select extends Component {
       const multipleValueCurrent = [...multipleValueArray, ...currentValue];
       const multipleValueString = getValueString(multipleValueCurrent);
       const multipleValueArrayOption = multipleValueCurrent.map(mv => getValueSelected(options, mv));
-      _value = extractValueOption ? multipleValueArrayOption :multipleValueString;
+      _value = extractValueOption ? multipleValueArrayOption : multipleValueString;
       onChange(_value);
 
     } else {
@@ -192,7 +192,14 @@ class Select extends Component {
 	}
 
   handleDeleteValue = (valueToDelete) => {
-    const { multiple, extractValueOption, value, onChange, options } = this.props;
+    const {
+      multiple,
+      extractValueOption,
+      value,
+      onChange,
+      options,
+    } = this.props;
+    
     const multipleValueArray = getValueArray(value);
     const multipleValueArrayOption = multipleValueArray.map(mv => getValueSelected(options, mv));
     const valueOption = v => v.value !== valueToDelete;
@@ -272,15 +279,19 @@ class Select extends Component {
 
   render() {
 
-    const { value, options, placeholder, multiple } = this.props;
-    const selectedOption = _find(options, option => option.value === value);
-    const { isOpen } = this.state;
+    const {
+      isOpen,
+    } = this.state;
+
+    const {
+      value,
+      options,
+      placeholder,
+      multiple,
+    } = this.props;
 
     return (
-      <div
-        className={`${PREFIX}-container`}
-        ref={c => this.component = c}
-      >
+      <div className={`${PREFIX}-container`} ref={c => this.component = c}>
         <div
           className={`${PREFIX}-control`}
           tabIndex={0}
@@ -290,10 +301,7 @@ class Select extends Component {
         </div>
         {
           isOpen &&
-            <div
-              className={`${PREFIX}-menu`}
-              onKeyDown={this.handleKeyDown}
-  					>
+            <div className={`${PREFIX}-menu`} onKeyDown={this.handleKeyDown}>
               { this.renderSearchInput() }
               <div className={`${PREFIX}-option-list`}>
                 { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
