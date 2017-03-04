@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { PREFIX, styles } from './index';
+import { PREFIX } from './index';
+import { pureRender } from './utils';
 
-export default class Option extends Component {
+class Option extends Component {
 
   static propTypes = {
     indexPath: PropTypes.shape({
@@ -20,17 +21,13 @@ export default class Option extends Component {
   render() {
     const { label, isFocus } = this.props;
 
-    const style = {
-      ...styles.option,
-      ...isFocus && styles.optionWithFocus
-    };
-
     return (
       <div
-        className={`${PREFIX}-option`}
-        style={style}
+        className={`${PREFIX}-option ${isFocus && 'isFocus'}`}
         onClick={this.handleClickOption}
       >{label}</div>
     );
   }
 }
+
+export default pureRender(Option);

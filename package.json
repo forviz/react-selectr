@@ -1,5 +1,4 @@
 {
-  
   "name": "react-selectr",
   "version": "0.0.0-development",
   "description": "A select component for react, packed with power.",
@@ -47,6 +46,7 @@
     "chai": "^3.5.0",
     "commitizen": "^2.8.7",
     "cross-env": "^3.1.4",
+    "css-loader": "^0.26.2",
     "cz-conventional-changelog": "^1.2.0",
     "eslint": "^3.15.0",
     "eslint-config-airbnb": "^14.1.0",
@@ -57,19 +57,23 @@
     "express": "^4.14.1",
     "husky": "^0.13.1",
     "mocha": "^3.2.0",
+    "node-sass": "^4.5.0",
     "nyc": "^10.0.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-hot-loader": "^3.0.0-beta.2",
     "rimraf": "^2.6.0",
+    "sass-loader": "^6.0.2",
     "semantic-release": "^6.3.6",
     "semantic-release-gitlab": "^2.5.1",
+    "style-loader": "^0.13.2",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-hot-middleware": "^2.17.0"
   },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "react-addons-shallow-compare": "^15.4.2"
   },
   "peerDependencies": {
     "react": "^15.4.2",
