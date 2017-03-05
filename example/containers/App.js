@@ -27,8 +27,9 @@ export default class App extends Component {
 
   state = {
     value1: '',
-    value2: '',
+    valueHero: '',
     valueMultiple: '',
+    valueCountry: '',
   }
 
   handleChange = (key, value) => {
@@ -61,9 +62,9 @@ export default class App extends Component {
 
       <h2>OptGroup (Dota2 Heroes)</h2>
         <Select
-          value={value2}
+          value={valueHero}
           options={dotaHeroes}
-          onChange={value => this.handleChange('value2', value)}
+          onChange={value => this.handleChange('valueHero', value)}
         />
 
         <h2>Multiple</h2>
@@ -82,9 +83,9 @@ export default class App extends Component {
 
       <h2>Large DataSet (Countries)</h2>
         <Select
-          value={value2}
+          value={valueCountry}
           options={countriesOptions}
-          onChange={value => this.handleChange('value2', value)}
+          onChange={value => this.handleChange('valueCountry', value)}
         />
 
       </div>
