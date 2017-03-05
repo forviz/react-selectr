@@ -130,6 +130,10 @@ class Select extends Component {
     });
   }
 
+  handleSearchInputChange = (e) => {
+    this.handleFilterOption(e);
+  }
+
   handleFilterOption = (e) => {
     this.setState({
       searchValue: e.target.value,
@@ -233,7 +237,7 @@ class Select extends Component {
           type="text"
           autoFocus
           ref={c => this.searchInput = c}
-          onChange={this.handleFilterOption}
+          onChange={this.handleSearchInputChange}
         />
       </div>
     );
