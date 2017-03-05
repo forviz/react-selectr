@@ -29,6 +29,10 @@ describe('mapOptions', () => {
       expect(optionGroups2[1].value).to.equal('F');
       expect(optionGroups2[1].groupIndex).to.equal(0);
     });
+
+    it('memoize func should return same array', () => {
+      expect(mapOptions(options2)).to.equal(mapOptions(options2));
+    });
   });
 
   describe('Scenario: optionGroups', () => {
@@ -64,5 +68,8 @@ describe('mapOptions', () => {
       expect(optionGroups[3].groupIndex).to.equal(1);
     });
 
+    it('memoize func should return same array', () => {
+      expect(mapOptions(options)).to.equal(mapOptions(options));
+    });
   });
 });
