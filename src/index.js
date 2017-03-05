@@ -182,7 +182,6 @@ class Select extends Component {
 	}
 
   focusAtOption = (toIndex) => {
-    console.log('focusAtOption', toIndex);
     let _targetIndex;
     if (toIndex < 0) _targetIndex = 0;
     else if (toIndex > this.props.options.length - 1) _targetIndex = this.props.options.length - 1;
