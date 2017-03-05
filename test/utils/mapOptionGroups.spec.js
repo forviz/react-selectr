@@ -17,10 +17,14 @@ describe('mapOptionGroups', () => {
     it('should return array of empty string in', () => {
       expect(optionGroups2).to.deep.equal(['']);
     });
+
+    it('memoize func should return same array', () => {
+      expect(mapOptionGroups(options)).to.equal(mapOptionGroups(options));
+    });
   });
 
   describe('Scenario: optionGroups', () => {
-    const options = [
+    let options = [
       {
         label: 'Asia',
         options: [
@@ -43,5 +47,19 @@ describe('mapOptionGroups', () => {
       expect(optionGroups).to.deep.equal(['Asia', 'Europe']);
     });
 
+    it('memoize func should return same array', () => {
+      expect(optionGroups).to.equal(mapOptionGroups(options));
+    });
+
+    it('memoize func should return different result with new ref changed', () => {
+      const options2 = [...options];
+      expect(optionGroups).to.not.equal(mapOptionGroups(options2));
+      expect(optionGroups).to.deep.equal(mapOptionGroups(options2));
+    });
+    it('memoize func should return different result with new options changed', () => {
+      options = [...options, { label: 'America', options: [{ value: 7, label: 'USA' }] }];
+      expect(optionGroups).to.not.equal(mapOptionGroups(options));
+      expect(mapOptionGroups(options)).to.equal(mapOptionGroups(options));
+    });
   });
 });
