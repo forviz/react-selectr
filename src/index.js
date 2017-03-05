@@ -52,8 +52,6 @@ class Select extends Component {
     })),
     groups: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
-    openOnFocus: PropTypes.bool,          // always open options menu on focus
-    openAfterFocus: PropTypes.bool,
 
     // Events
     filterOption: PropTypes.func,         // function to filer an option
@@ -68,15 +66,11 @@ class Select extends Component {
   static defaultProps = {
     disabled: false,
     searchable: true,
-    openOnFocus: true,
-    openAfterFocus: false,
     placeholder: 'Select...',
   }
 
   state = {
     isOpen: false,
-    isFocused: false,
-    isPseudoFocused: false,
     focusAtIndex: 0, // indexToFocus
   }
 
@@ -122,9 +116,7 @@ class Select extends Component {
       onChange(_value);
 
       /* Close options */
-      this.setState({
-        isOpen: false,
-      });
+      this.handleCloseMenu();
 
     }
   }
@@ -240,19 +232,6 @@ class Select extends Component {
     );
   }
 
-  // renderOptionGroups = (options) => {
-  //   return _map(options, (optgroup, groupIndex) => this.renderOptionGroup(optgroup, groupIndex));
-  // }
-  //
-  // renderOptionGroup = (optgroup, groupIndex) => {
-  //   const { options, label } = optgroup;
-  //   return (
-  //     <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-  //       {this.renderOptions(options)}
-  //     </OptionGroup>
-  //   );
-  // }
-
   renderOptions = (groups, options) => {
     return _map(groups, (label, groupIndex) => {
       const groupOptions = _.filter(options, option => option.groupIndex === groupIndex);
@@ -261,8 +240,7 @@ class Select extends Component {
           { _map(groupOptions, option => this.renderOption(option)) }
         </OptionGroup>
       );
-    })
-    // return _map(options, (option, index) => this.renderOption(option, index));
+    });
   }
 
   renderOption = (option) => {

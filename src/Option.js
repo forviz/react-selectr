@@ -11,6 +11,7 @@ class Option extends Component {
     isFocus: PropTypes.bool,
 
     onFocus: PropTypes.func,
+    onSelect: PropTypes.func,
   }
 
   // Do focus option when mouse enter
