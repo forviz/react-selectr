@@ -278,7 +278,9 @@ class Select extends Component {
         index={index}
         label={_label}
         value={_value}
+        onFocus={this.focusAtOption}
         onSelect={this.handleSelectOption}
+        on
       />
     );
   }
