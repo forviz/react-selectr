@@ -18,9 +18,9 @@ const mapOptions = (propOptions) => {
   }
 
   // Not Option Group
-  return _map(propOptions, (opt) => {
-    if (_isString(opt)) return { label: opt, value: opt, groupIndex: 0 };
-    return { ...opt, groupIndex: 0 };
+  return _map(propOptions, (opt, index) => {
+    if (_isString(opt)) return { label: opt, value: opt, optionIndex: index, groupIndex: 0 };
+    return { ...opt, optionIndex: index, groupIndex: 0 };
   });
 };
 
