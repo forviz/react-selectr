@@ -33,9 +33,16 @@ class Option extends Component {
   handleMouseUp = (e) => {
     this.pressing = false;
     if(this.dragging) return;
+
+    // TODO: Not sure why, but this prevent double selectOption from touch devices
+    e.preventDefault();
+		e.stopPropagation();
+
     this.handleSelectOption(e);
   }
-  handleTouchEnd = (e) => { this.handleMouseUp(e); }
+  handleTouchEnd = (e) => {
+    this.handleMouseUp(e);
+  }
 
   handleSelectOption = (e) => {
     this.props.onSelect(this.props.value);

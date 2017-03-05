@@ -96,7 +96,6 @@ class Select extends Component {
   /* End of Detect click Outside */
 
   handleSelectOption = (currentValue) => {
-
     const {
       multiple,
       options,
