@@ -3,6 +3,10 @@ import _pick from 'lodash/pick';
 import _map from 'lodash/map';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
+import _filter from 'lodash/filter';
+
+import compose from 'recompose/compose';
+import mapProps from 'recompose/mapProps';
 
 import OptionGroup from './OptionGroup';
 import Option from './Option';
@@ -10,14 +14,28 @@ import Value from './Value';
 
 // Utils
 import {
+  mapOptions,
+  mapOptionGroups,
   isOptionGroup,
   getOptionValue,
   getValueArray,
   getValueString,
   getValueSelected,
+  defaultFilterOptions,
+  getOptions,
 } from './utils';
 
 export const PREFIX = 'rselectr';
+
+const enhance = compose(
+  mapProps(props => {
+    return {
+      ...props,
+      options: mapOptions(props.options),
+      groups: mapOptionGroups(props.options),
+    }
+  }),
+);
 
 class Select extends Component {
 
@@ -30,10 +48,13 @@ class Select extends Component {
     searchable: PropTypes.bool,
     extractValueOption: PropTypes.bool,
     value: PropTypes.string,
-    options: PropTypes.array,
+    options: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.string,
+      label: PropTypes.string,
+      groupIndex: PropTypes.number,
+    })),
+    groups: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
-    openOnFocus: PropTypes.bool,          // always open options menu on focus
-    openAfterFocus: PropTypes.bool,
 
     // Events
     filterOption: PropTypes.func,         // function to filer an option
@@ -48,16 +69,13 @@ class Select extends Component {
   static defaultProps = {
     disabled: false,
     searchable: true,
-    openOnFocus: true,
-    openAfterFocus: false,
     placeholder: 'Select...',
   }
 
   state = {
     isOpen: false,
-    isFocused: false,
-    isPseudoFocused: false,
     focusAtIndex: 0, // indexToFocus
+    searchValue: '', // searchValue for filter options
   }
 
   /* Detect click Outside */
@@ -76,7 +94,6 @@ class Select extends Component {
   /* End of Detect click Outside */
 
   handleSelectOption = (currentValue) => {
-
     const {
       multiple,
       options,
@@ -102,9 +119,7 @@ class Select extends Component {
       onChange(_value);
 
       /* Close options */
-      this.setState({
-        isOpen: false,
-      });
+      this.handleCloseMenu();
 
     }
   }
@@ -123,6 +138,16 @@ class Select extends Component {
   handleCloseMenu = () => {
     this.setState({
       isOpen: false,
+    });
+  }
+
+  handleSearchInputChange = (e) => {
+    this.handleFilterOption(e);
+  }
+
+  handleFilterOption = (e) => {
+    this.setState({
+      searchValue: e.target.value,
     });
   }
 
@@ -206,6 +231,14 @@ class Select extends Component {
     onChange(_value);
   }
 
+  selectOptionsToRender = (options, searchValue, { searchable, filterOptions, filterOption }) => {
+    console.log('selectOptionsToRender', options, searchValue, searchable, filterOptions, filterOption);
+    if (!searchable) return options;
+    if (filterOptions && _.isFunction(filterOptions)) return filterOptions(options, searchValue);
+    if (filterOption && _.isFunction(filterOption)) return defaultFilterOptions(options, searchValue, filterOption);
+    return defaultFilterOptions(options, searchValue);
+  }
+
   renderSearchInput = () => {
     return (
       <div className={`${PREFIX}-searchInput-wrapper`}>
@@ -214,31 +247,34 @@ class Select extends Component {
           type="text"
           autoFocus
           ref={c => this.searchInput = c}
+          onChange={this.handleSearchInputChange}
         />
       </div>
     );
   }
 
-  renderOptionGroups = (options) => {
-    return _map(options, (optgroup, groupIndex) => this.renderOptionGroup(optgroup, groupIndex));
+  // OLD WAY
+  // renderOptions = (options) => {
+  //   const { searchValue } = this.state;
+  //   return _map(this.selectOptionsToRender(options, searchValue, this.props), (option, index) => this.renderOption(option, index));
+  // }
+
+  renderOptions = (groups, options) => {
+    const { searchValue } = this.state;
+    return _map(groups, (label, groupIndex) => {
+      const groupOptions = _filter(options, option => option.groupIndex === groupIndex);
+      return (
+        <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
+          { _map(groupOptions, option => this.renderOption(option)) }
+        </OptionGroup>
+      );
+    });
   }
 
-  renderOptionGroup = (optgroup, groupIndex) => {
-    const { options, label } = optgroup;
-    return (
-      <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-        {this.renderOptions(options)}
-      </OptionGroup>
-    );
-  }
-
-  renderOptions = (options) => {
-    return _map(options, (option, index) => this.renderOption(option, index));
-  }
-
-  renderOption = (option, index) => {
+  renderOption = (option) => {
     const _label = option.label || option;
     const _value = option.value || option;
+    const index = option.optionIndex;
     const { focusAtIndex } = this.state;
     return (
       <Option
@@ -247,7 +283,9 @@ class Select extends Component {
         index={index}
         label={_label}
         value={_value}
+        onFocus={this.focusAtOption}
         onSelect={this.handleSelectOption}
+        on
       />
     );
   }
@@ -261,7 +299,7 @@ class Select extends Component {
     /* Multiple */
     if (multiple) {
       const multipleValue = getValueArray(value);
-      return multipleValue.map((v, i) => 
+      return multipleValue.map((v, i) =>
         <Value
           key={`${PREFIX}-${v}-${i}`}
           value={v}
@@ -283,6 +321,7 @@ class Select extends Component {
 
     const {
       value,
+      groups,
       options,
       placeholder,
       multiple,
@@ -302,7 +341,7 @@ class Select extends Component {
             <div className={`${PREFIX}-menu`} onKeyDown={this.handleKeyDown}>
               { this.renderSearchInput() }
               <div className={`${PREFIX}-option-list`}>
-                { isOptionGroup(options) ? this.renderOptionGroups(options) : this.renderOptions(options) }
+                { this.renderOptions(groups, options)}
               </div>
             </div>
         }
@@ -311,4 +350,4 @@ class Select extends Component {
   }
 };
 
-export default Select;
+export default enhance(Select);

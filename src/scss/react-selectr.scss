@@ -67,6 +67,13 @@ $orange: #f17e39;
   &-option{
     padding: 8px 12px;
     cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
     &.isFocus{
       background-color: rgba($orange, 0.1);
     }
