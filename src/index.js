@@ -20,6 +20,8 @@ import {
   getValueArray,
   getValueString,
   getValueSelected,
+  defaultFilterOptions,
+  getOptions,
 } from './utils';
 
 export const PREFIX = 'rselectr';
@@ -78,6 +80,7 @@ class Select extends Component {
     isFocused: false,
     isPseudoFocused: false,
     focusAtIndex: 0, // indexToFocus
+    searchValue: '', // searchValue for filter options
   }
 
   /* Detect click Outside */
@@ -144,6 +147,16 @@ class Select extends Component {
   handleCloseMenu = () => {
     this.setState({
       isOpen: false,
+    });
+  }
+
+  handleSearchInputChange = (e) => {
+    this.handleFilterOption(e);
+  }
+
+  handleFilterOption = (e) => {
+    this.setState({
+      searchValue: e.target.value,
     });
   }
 
@@ -228,6 +241,14 @@ class Select extends Component {
     onChange(_value);
   }
 
+  selectOptionsToRender = (options, searchValue, { searchable, filterOptions, filterOption }) => {
+    console.log('selectOptionsToRender', options, searchValue, searchable, filterOptions, filterOption);
+    if (!searchable) return options;
+    if (filterOptions && _.isFunction(filterOptions)) return filterOptions(options, searchValue);
+    if (filterOption && _.isFunction(filterOption)) return defaultFilterOptions(options, searchValue, filterOption);
+    return defaultFilterOptions(options, searchValue);
+  }
+
   renderSearchInput = () => {
     return (
       <div className={`${PREFIX}-searchInput-wrapper`}>
@@ -236,25 +257,20 @@ class Select extends Component {
           type="text"
           autoFocus
           ref={c => this.searchInput = c}
+          onChange={this.handleSearchInputChange}
         />
       </div>
     );
   }
 
-  // renderOptionGroups = (options) => {
-  //   return _map(options, (optgroup, groupIndex) => this.renderOptionGroup(optgroup, groupIndex));
-  // }
-  //
-  // renderOptionGroup = (optgroup, groupIndex) => {
-  //   const { options, label } = optgroup;
-  //   return (
-  //     <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-  //       {this.renderOptions(options)}
-  //     </OptionGroup>
-  //   );
+  // OLD WAY
+  // renderOptions = (options) => {
+  //   const { searchValue } = this.state;
+  //   return _map(this.selectOptionsToRender(options, searchValue, this.props), (option, index) => this.renderOption(option, index));
   // }
 
   renderOptions = (groups, options) => {
+    const { searchValue } = this.state;
     return _map(groups, (label, groupIndex) => {
       const groupOptions = _.filter(options, option => option.groupIndex === groupIndex);
       return (
