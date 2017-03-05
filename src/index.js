@@ -3,6 +3,7 @@ import _pick from 'lodash/pick';
 import _map from 'lodash/map';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
+import _filter from 'lodash/filter';
 
 import compose from 'recompose/compose';
 import mapProps from 'recompose/mapProps';
@@ -54,8 +55,6 @@ class Select extends Component {
     })),
     groups: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
-    openOnFocus: PropTypes.bool,          // always open options menu on focus
-    openAfterFocus: PropTypes.bool,
 
     // Events
     filterOption: PropTypes.func,         // function to filer an option
@@ -70,15 +69,11 @@ class Select extends Component {
   static defaultProps = {
     disabled: false,
     searchable: true,
-    openOnFocus: true,
-    openAfterFocus: false,
     placeholder: 'Select...',
   }
 
   state = {
     isOpen: false,
-    isFocused: false,
-    isPseudoFocused: false,
     focusAtIndex: 0, // indexToFocus
     searchValue: '', // searchValue for filter options
   }
@@ -99,7 +94,6 @@ class Select extends Component {
   /* End of Detect click Outside */
 
   handleSelectOption = (currentValue) => {
-
     const {
       multiple,
       options,
@@ -126,9 +120,7 @@ class Select extends Component {
       onChange(_value);
 
       /* Close options */
-      this.setState({
-        isOpen: false,
-      });
+      this.handleCloseMenu();
 
     }
   }
@@ -272,14 +264,13 @@ class Select extends Component {
   renderOptions = (groups, options) => {
     const { searchValue } = this.state;
     return _map(groups, (label, groupIndex) => {
-      const groupOptions = _.filter(options, option => option.groupIndex === groupIndex);
+      const groupOptions = _filter(options, option => option.groupIndex === groupIndex);
       return (
         <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
           { _map(groupOptions, option => this.renderOption(option)) }
         </OptionGroup>
       );
-    })
-    // return _map(options, (option, index) => this.renderOption(option, index));
+    });
   }
 
   renderOption = (option) => {
@@ -294,7 +285,9 @@ class Select extends Component {
         index={index}
         label={_label}
         value={_value}
+        onFocus={this.focusAtOption}
         onSelect={this.handleSelectOption}
+        on
       />
     );
   }
