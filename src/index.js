@@ -47,7 +47,10 @@ class Select extends Component {
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
     extractValueOption: PropTypes.bool,
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+    ]),
     options: PropTypes.arrayOf(PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string,
