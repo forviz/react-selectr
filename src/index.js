@@ -3,6 +3,7 @@ import _pick from 'lodash/pick';
 import _map from 'lodash/map';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
+import _filter from 'lodash/filter';
 
 import compose from 'recompose/compose';
 import mapProps from 'recompose/mapProps';
@@ -234,7 +235,7 @@ class Select extends Component {
 
   renderOptions = (groups, options) => {
     return _map(groups, (label, groupIndex) => {
-      const groupOptions = _.filter(options, option => option.groupIndex === groupIndex);
+      const groupOptions = _filter(options, option => option.groupIndex === groupIndex);
       return (
         <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
           { _map(groupOptions, option => this.renderOption(option)) }
