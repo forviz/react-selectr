@@ -1,3 +1,4 @@
+export defaultFilterOptions from './defaultFilterOptions';
 export mapOptions from './mapOptions';
 export mapOptionGroups from './mapOptionGroups';
 export getOptionValue from './getOptionValue';
