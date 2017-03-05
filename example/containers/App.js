@@ -41,8 +41,9 @@ export default class App extends Component {
   render() {
     const {
       value1,
-      value2,
+      valueHero,
       valueMultiple,
+      valueCountry,
     } = this.state;
 
     return (
