@@ -23,8 +23,6 @@ const countriesOptions2 = _.reduce(countries, (accumulator, item, index) => {
   return [ ...accumulator, ...states];
 }, []);
 
-console.log('countriesOptions2', countriesOptions2);
-
 export default class App extends Component {
 
   state = {
@@ -53,11 +51,10 @@ export default class App extends Component {
         <h2>Normal</h2>
         <Select
           value={value1}
-          // options={[
-          //   { value: 'M', label: 'MALE' },
-          //   { value: 'F', label: 'FEMALE' },
-          // ]}
-          options={countriesOptions2}
+          options={[
+            { value: 'M', label: 'MALE' },
+            { value: 'F', label: 'FEMALE' },
+          ]}
           onChange={value => this.handleChange('value1', value)}
         />
 
@@ -68,7 +65,6 @@ export default class App extends Component {
           options={dotaHeroes}
           onChange={value => this.handleChange('value2', value)}
         />
-
 
         <h2>Multiple</h2>
         <Select
