@@ -1,26 +1,25 @@
 import React, { Component, PropTypes } from 'react';
+import { PREFIX } from './index';
+import { pureRender } from './utils';
 
-export default class OptionGroup extends Component {
+class OptionGroup extends Component {
 
   static propTypes = {
-    indexPath: PropTypes.shape({
-      section: PropTypes.number,
-      row: PropTypes.number,
-    }),
-    prefix: PropTypes.string,
     label: PropTypes.string,
-    value: PropTypes.string,
   }
 
   render() {
-    const { prefix, label } = this.props;
+    const { label } = this.props;
+
     return (
       <div
-        className={`${prefix}-option`}
+        className={`${PREFIX}-optionGroup`}
       >
-        <span>{label}</span>
+        <span className={`${PREFIX}-optionGroupLabel`}>{label}</span>
         {this.props.children}
       </div>
     );
   }
 }
+
+export default pureRender(OptionGroup);
