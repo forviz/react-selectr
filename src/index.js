@@ -47,7 +47,10 @@ class Select extends Component {
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
     extractValueOption: PropTypes.bool,
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+    ]),
     options: PropTypes.arrayOf(PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string,
@@ -223,7 +226,7 @@ class Select extends Component {
       onChange,
       options,
     } = this.props;
-    
+
     const multipleValue = getValueArray(value);
     const multipleValueOptions = multipleValue.map(mv => getValueSelected(options, mv)).filter(v => v.value !== valueToDelete);
     const multipleValueString = getValueString(multipleValue.filter(v => v !== valueToDelete));
@@ -232,7 +235,6 @@ class Select extends Component {
   }
 
   selectOptionsToRender = (options, searchValue, { searchable, filterOptions, filterOption }) => {
-    console.log('selectOptionsToRender', options, searchValue, searchable, filterOptions, filterOption);
     if (!searchable) return options;
     if (filterOptions && _.isFunction(filterOptions)) return filterOptions(options, searchValue);
     if (filterOption && _.isFunction(filterOption)) return defaultFilterOptions(options, searchValue, filterOption);
@@ -253,21 +255,22 @@ class Select extends Component {
     );
   }
 
-  // OLD WAY
-  // renderOptions = (options) => {
-  //   const { searchValue } = this.state;
-  //   return _map(this.selectOptionsToRender(options, searchValue, this.props), (option, index) => this.renderOption(option, index));
-  // }
 
   renderOptions = (groups, options) => {
     const { searchValue } = this.state;
+    const filteredOptions = this.selectOptionsToRender(options, searchValue, this.props);
+
     return _map(groups, (label, groupIndex) => {
-      const groupOptions = _filter(options, option => option.groupIndex === groupIndex);
-      return (
-        <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
-          { _map(groupOptions, option => this.renderOption(option)) }
-        </OptionGroup>
-      );
+      const groupOptions = _filter(filteredOptions, option => option.groupIndex === groupIndex);
+      if (groupOptions.length > 0) {
+        return (
+          <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
+            { _map(groupOptions, option => this.renderOption(option)) }
+          </OptionGroup>
+        );
+      }
+
+      return;
     });
   }
 

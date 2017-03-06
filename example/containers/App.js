@@ -23,14 +23,13 @@ const countriesOptions2 = _.reduce(countries, (accumulator, item, index) => {
   return [ ...accumulator, ...states];
 }, []);
 
-console.log('countriesOptions2', countriesOptions2);
-
 export default class App extends Component {
 
   state = {
     value1: '',
-    value2: '',
+    valueHero: '',
     valueMultiple: '',
+    valueCountry: '',
   }
 
   handleChange = (key, value) => {
@@ -42,8 +41,9 @@ export default class App extends Component {
   render() {
     const {
       value1,
-      value2,
+      valueHero,
       valueMultiple,
+      valueCountry,
     } = this.state;
 
     return (
@@ -53,22 +53,20 @@ export default class App extends Component {
         <h2>Normal</h2>
         <Select
           value={value1}
-          // options={[
-          //   { value: 'M', label: 'MALE' },
-          //   { value: 'F', label: 'FEMALE' },
-          // ]}
-          options={countriesOptions2}
+          options={[
+            { value: 'M', label: 'MALE' },
+            { value: 'F', label: 'FEMALE' },
+          ]}
           onChange={value => this.handleChange('value1', value)}
         />
 
 
       <h2>OptGroup (Dota2 Heroes)</h2>
         <Select
-          value={value2}
+          value={valueHero}
           options={dotaHeroes}
-          onChange={value => this.handleChange('value2', value)}
+          onChange={value => this.handleChange('valueHero', value)}
         />
-
 
         <h2>Multiple</h2>
         <Select
@@ -86,9 +84,9 @@ export default class App extends Component {
 
       <h2>Large DataSet (Countries)</h2>
         <Select
-          value={value2}
+          value={valueCountry}
           options={countriesOptions}
-          onChange={value => this.handleChange('value2', value)}
+          onChange={value => this.handleChange('valueCountry', value)}
         />
 
       </div>
