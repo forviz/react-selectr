@@ -4,6 +4,7 @@ import _map from 'lodash/map';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import _isEmpty from 'lodash/isEmpty';
 
 import compose from 'recompose/compose';
 import mapProps from 'recompose/mapProps';
@@ -70,6 +71,7 @@ class Select extends Component {
   }
 
   static defaultProps = {
+    value: '',
     disabled: false,
     searchable: true,
     placeholder: 'Select...',
@@ -77,8 +79,9 @@ class Select extends Component {
 
   state = {
     isOpen: false,
-    focusAtIndex: 0, // indexToFocus
-    searchValue: '', // searchValue for filter options
+    focusAtIndex: 0,           // indexToFocus
+    searchValue: '',           // searchValue for filter options
+    optionPosition: 'dropdown',  // option position
   }
 
   /* Detect click Outside */
@@ -89,6 +92,7 @@ class Select extends Component {
 
   componentDidMount() {
     document.addEventListener('mousedown', this._handleDetectClickOutside)
+    window.addEventListener('scroll', this.handleChangeOptionPosition)
   }
 
   componentWillUnmount() {
@@ -96,6 +100,16 @@ class Select extends Component {
   }
   /* End of Detect click Outside */
 
+  handleChangeOptionPosition = () => {
+    const windowHeight = window.innerHeight;                                                    // current window height
+    const componentTop = this.component.getBoundingClientRect().top;                            // select component offset top
+    const optionHeight = this.menuOption && this.menuOption.offsetHeight + 50 || 400;           // option component height
+    const optionPosition = componentTop + optionHeight >= windowHeight ? 'dropup' : 'dropdown'; // option position
+    this.setState({
+      optionPosition: optionPosition,
+    })
+  }
+  
   handleSelectOption = (currentValue) => {
     const {
       multiple,
@@ -232,6 +246,7 @@ class Select extends Component {
     const multipleValueString = getValueString(multipleValue.filter(v => v !== valueToDelete));
     const _value = extractValueOption ? multipleValueOptions : multipleValueString;
     onChange(_value);
+
   }
 
   selectOptionsToRender = (options, searchValue, { searchable, filterOptions, filterOption }) => {
@@ -299,6 +314,9 @@ class Select extends Component {
 
   renderValue = (options, value, multiple) => {
 
+    /* Value is Empty */
+    if (value === '' || _isEmpty(value)) return false
+
     /* Multiple */
     if (multiple) {
       const multipleValue = getValueArray(value);
@@ -313,6 +331,7 @@ class Select extends Component {
       )
     }
 
+    /* Single */
     return (<Value value={getOptionValue(value)}>{ this.renderValueLabel(options, getOptionValue(value)) }</Value>);
   }
 
@@ -320,6 +339,7 @@ class Select extends Component {
 
     const {
       isOpen,
+      optionPosition,
     } = this.state;
 
     const {
@@ -328,25 +348,30 @@ class Select extends Component {
       options,
       placeholder,
       multiple,
+      disabled,
     } = this.props;
 
     return (
       <div className={`${PREFIX}-container`} ref={c => this.component = c}>
         <div
-          className={`${PREFIX}-control`}
+          className={`${PREFIX}-control ${isOpen ? 'isfocus' : ''} ${disabled ? 'isdisabled' : ''}`}
           tabIndex={0}
-          onMouseDown={this.handleMouseDown}
+          onClick={this.handleMouseDown}
         >
-          {value && this.renderValue(options, value, multiple) || placeholder}
+          {this.renderValue(options, value, multiple) || placeholder}
         </div>
         {
           isOpen &&
-            <div className={`${PREFIX}-menu`} onKeyDown={this.handleKeyDown}>
-              { this.renderSearchInput() }
-              <div className={`${PREFIX}-option-list`}>
-                { this.renderOptions(groups, options)}
-              </div>
+          <div
+            className={`${PREFIX}-menu ${optionPosition}`}
+            ref={mo => this.menuOption = mo}
+            onKeyDown={this.handleKeyDown}
+          >
+            { this.renderSearchInput() }
+            <div className={`${PREFIX}-option-list`}>
+              { this.renderOptions(groups, options)}
             </div>
+          </div>
         }
       </div>
     )

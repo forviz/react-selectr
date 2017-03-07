@@ -15,7 +15,7 @@ class OptionGroup extends Component {
       <div
         className={`${PREFIX}-optionGroup`}
       >
-        <span className={`${PREFIX}-optionGroupLabel`}>{label}</span>
+        {label !== '' && <span className={`${PREFIX}-optionGroupLabel`}>{label}</span>}
         {this.props.children}
       </div>
     );
