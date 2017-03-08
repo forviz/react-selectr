@@ -57,12 +57,13 @@ class Select extends Component {
       label: PropTypes.string,
       groupIndex: PropTypes.number,
     })),
+    optionPosition: PropTypes.string,             // dropdown | dropup
     groups: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
 
     // Events
-    filterOption: PropTypes.func,         // function to filer an option
-    filterOptions: PropTypes.func,        // function to filer options
+    filterOption: PropTypes.func,                 // function to filer an option
+    filterOptions: PropTypes.func,                // function to filer options
     onChange: PropTypes.func,
 
     onInputChange: PropTypes.func,
@@ -75,13 +76,14 @@ class Select extends Component {
     disabled: false,
     searchable: true,
     placeholder: 'Select...',
+    optionPosition: false,
   }
 
   state = {
     isOpen: false,
-    focusAtIndex: 0,           // indexToFocus
-    searchValue: '',           // searchValue for filter options
-    optionPosition: 'dropdown',  // option position
+    focusAtIndex: 0,                                          // indexToFocus
+    searchValue: '',                                          // searchValue for filter options
+    optionPosition: this.props.optionPosition || 'dropdown',  // option position
   }
 
   /* Detect click Outside */
@@ -92,22 +94,27 @@ class Select extends Component {
 
   componentDidMount() {
     document.addEventListener('mousedown', this._handleDetectClickOutside)
+    window.addEventListener('load', this.handleChangeOptionPosition)
     window.addEventListener('scroll', this.handleChangeOptionPosition)
   }
 
   componentWillUnmount() {
     document.removeEventListener('mousedown', this._handleDetectClickOutside)
+    window.removeEventListener('scroll', this.handleChangeOptionPosition)
   }
   /* End of Detect click Outside */
 
   handleChangeOptionPosition = () => {
-    const windowHeight = window.innerHeight;                                                    // current window height
-    const componentTop = this.component.getBoundingClientRect().top;                            // select component offset top
-    const optionHeight = this.menuOption && this.menuOption.offsetHeight + 50 || 400;           // option component height
-    const optionPosition = componentTop + optionHeight >= windowHeight ? 'dropup' : 'dropdown'; // option position
-    this.setState({
-      optionPosition: optionPosition,
-    })
+    const hasPropOptionPosition = !this.props.optionPosition;                                     // check if has props optionPosition
+    if (hasPropOptionPosition) {
+      const windowHeight = window.innerHeight;                                                    // current window height
+      const componentTop = this.component.getBoundingClientRect().top;                            // select component offset top
+      const optionHeight = this.menuOption && this.menuOption.offsetHeight + 50 || 400;           // option component height
+      const optionPosition = componentTop + optionHeight >= windowHeight ? 'dropup' : 'dropdown'; // option position
+      this.setState({
+        optionPosition: optionPosition,
+      });
+    }
   }
   
   handleSelectOption = (currentValue) => {
@@ -315,7 +322,7 @@ class Select extends Component {
   renderValue = (options, value, multiple) => {
 
     /* Value is Empty */
-    if (value === '' || _isEmpty(value)) return false
+    if (_isEmpty(value)) return false
 
     /* Multiple */
     if (multiple) {
