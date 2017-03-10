@@ -9,13 +9,18 @@ import { pureRender } from './utils';
     value: PropTypes.string,
   }
 
-  renderValueItem = () => {
+  handleDeleteValue = (e) => {
     const { onDelete, value } = this.props;
-    const isMultiValue = onDelete;
+    e.stopPropagation();
+    onDelete(value);
+  }
+
+  renderValueItem = () => {
+    const isMultiValue = this.props.onDelete;
     if (isMultiValue) {
       return (
         <div className={`${PREFIX}-value-item`}>
-          <span className={`${PREFIX}-value-delete`} onClick={() => onDelete(value)}>×</span>
+          <span className={`${PREFIX}-value-delete`} onClick={this.handleDeleteValue}>×</span>
           <span className={`${PREFIX}-value`}>{this.props.children}</span>
         </div>
       )

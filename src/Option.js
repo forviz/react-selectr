@@ -63,7 +63,7 @@ class Option extends Component {
 
     return (
       <div
-        className={`${PREFIX}-option ${isFocus && 'isFocus'}`}
+        className={`${PREFIX}-option ${isFocus ? 'isFocus' : ''}`}
         role="option"
         onMouseEnter={this.handleMouseEnter}
         onMouseDown={this.handleMouseDown}

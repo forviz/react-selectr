@@ -19,7 +19,7 @@ class OptionGroup extends Component {
       <div
         className={`${PREFIX}-optionGroup`}
       >
-        <div className={`${PREFIX}-optionGroupLabel`}>{optionGroupLabelRenderer(label)}</div>
+        {label !== '' && <div className={`${PREFIX}-optionGroupLabel`}>{optionGroupLabelRenderer(label)}</div>}
         {this.props.children}
       </div>
     );
