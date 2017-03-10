@@ -29,6 +29,7 @@ export default class App extends Component {
     value1: '',
     valueHero: '',
     valueMultiple: '',
+    valueCustomRender: '',
     valueCountry: '',
   }
 
@@ -43,6 +44,7 @@ export default class App extends Component {
       value1,
       valueHero,
       valueMultiple,
+      valueCustomRender,
       valueCountry,
     } = this.state;
 
@@ -84,9 +86,9 @@ export default class App extends Component {
 
       <h2>CustomRenderOption (Dota2 Heroes)</h2>
         <Select
-          value={valueHero}
+          value={valueCustomRender}
           options={dotaHeroes}
-          onChange={value => this.handleChange('valueHero', value)}
+          onChange={value => this.handleChange('valueCustomRender', value)}
           customRenderOption={(option) =>
             <div>
               <img src={`http://cdn.dota2.com/apps/dota2/images/heroes/${option.value}_sb.png`} width="50" style={{ marginRight: 5 }} />

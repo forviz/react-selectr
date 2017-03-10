@@ -53,7 +53,7 @@ class Option extends Component {
   }
 
   handleSelectOption = (e) => {
-    this.props.onSelect(getOptionValue(option));
+    this.props.onSelect(getOptionValue(this.props.option));
   }
 
   render() {
