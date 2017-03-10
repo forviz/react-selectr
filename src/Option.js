@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { PREFIX } from './index';
-import _omit from 'lodash/omit';
-import { pureRender } from './utils';
+import { pureRender, getOptionValue } from './utils';
 
 const defaultRenderOption = (option) => <span>{option.label}</span>;
 
@@ -54,7 +53,7 @@ class Option extends Component {
   }
 
   handleSelectOption = (e) => {
-    this.props.onSelect(this.props.option.value);
+    this.props.onSelect(getOptionValue(option));
   }
 
   render() {
