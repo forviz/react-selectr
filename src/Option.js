@@ -1,17 +1,25 @@
 import React, { Component, PropTypes } from 'react';
 import { PREFIX } from './index';
+import _omit from 'lodash/omit';
 import { pureRender } from './utils';
+
+const defaultRenderOption = (option) => <span>{option.label}</span>;
 
 class Option extends Component {
 
   static propTypes = {
     index: PropTypes.number,
-    label: PropTypes.string,
-    value: PropTypes.string,
+    option: PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string,
+    }),
+
     isFocus: PropTypes.bool,
 
     onFocus: PropTypes.func,
     onSelect: PropTypes.func,
+
+    customRenderOption: PropTypes.func,
   }
 
   // Do focus option when mouse enter
@@ -46,11 +54,13 @@ class Option extends Component {
   }
 
   handleSelectOption = (e) => {
-    this.props.onSelect(this.props.value);
+    this.props.onSelect(this.props.option.value);
   }
 
   render() {
-    const { label, isFocus } = this.props;
+    const { option, isFocus } = this.props;
+
+    const optionRenderer = this.props.customRenderOption || defaultRenderOption;
 
     return (
       <div
@@ -63,7 +73,7 @@ class Option extends Component {
         onTouchMove={this.handleTouchMove}
         onMouseUp={this.handleMouseUp}
         onTouchEnd={this.handleTouchEnd}
-      >{label}</div>
+      >{optionRenderer(option)}</div>
     );
   }
 }

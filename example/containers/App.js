@@ -61,7 +61,7 @@ export default class App extends Component {
         />
 
 
-      <h2>OptGroup (Dota2 Heroes)</h2>
+        <h2>OptGroup (Dota2 Heroes)</h2>
         <Select
           value={valueHero}
           options={dotaHeroes}
@@ -82,7 +82,20 @@ export default class App extends Component {
           onChange={value => this.handleChange('valueMultiple', value)}
         />
 
-      <h2>Large DataSet (Countries)</h2>
+      <h2>CustomRenderOption (Dota2 Heroes)</h2>
+        <Select
+          value={valueHero}
+          options={dotaHeroes}
+          onChange={value => this.handleChange('valueHero', value)}
+          customRenderOption={(option) =>
+            <div>
+              <img src={`http://cdn.dota2.com/apps/dota2/images/heroes/${option.value}_sb.png`} width="50" style={{ marginRight: 5 }} />
+              {option.label}
+            </div>
+          }
+        />
+
+        <h2>Large DataSet (Countries)</h2>
         <Select
           value={valueCountry}
           options={countriesOptions}
