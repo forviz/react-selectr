@@ -55,7 +55,10 @@ export default class App extends Component {
     return (
       <div className="container">
         <h1>React-selectr</h1>
-        <input type="text" />
+        <p>
+          <span>Just put here to test tab behavior</span>
+          <input type="text" />
+        </p>
         <h2>Normal</h2>
         <Select
           value={value1}
