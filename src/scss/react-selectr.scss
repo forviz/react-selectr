@@ -25,7 +25,8 @@ $shadow: rgba(0, 0, 0, 0.15);
     outline: none;
     transition: all 0.3s;
     box-shadow: 0px 0px 0px $shadow;
-    &.isfocus{
+    &.isfocus,
+    &:focus {
       box-shadow: 0px 0px 10px $shadow;
       border: 1px solid #f39760;
     }
