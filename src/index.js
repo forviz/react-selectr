@@ -44,6 +44,7 @@ class Select extends Component {
 
   static propTypes = {
     // Options
+    name: PropTypes.string,
     disabled: PropTypes.bool,
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
@@ -64,7 +65,13 @@ class Select extends Component {
     // Events
     filterOption: PropTypes.func,                 // function to filer an option
     filterOptions: PropTypes.func,                // function to filer options
+
+    onFocus: PropTypes.func,
     onChange: PropTypes.func,
+    onBlur: PropTypes.func,
+
+    onOpen: PropTypes.func,
+    onClose: PropTypes.func,
 
     onInputChange: PropTypes.func,
     onInputKeydown: PropTypes.func,
@@ -72,6 +79,7 @@ class Select extends Component {
   }
 
   static defaultProps = {
+    name: 'selectr',
     value: '',
     disabled: false,
     searchable: true,
@@ -86,19 +94,24 @@ class Select extends Component {
     optionPosition: this.props.optionPosition || 'dropdown',  // option position
   }
 
+  _handleDetectTouchOutside = (e) => {
+    this._handleDetectClickOutside(e.touches[0]);
+  }
   /* Detect click Outside */
   _handleDetectClickOutside = (e) => {
     if (this.component.contains(e.target)) return;
-    this.setState({ isOpen: false });
+    this.handleCloseMenu();
   }
 
   componentDidMount() {
+    document.addEventListener('touchstart', this._handleDetectTouchOutside)
     document.addEventListener('mousedown', this._handleDetectClickOutside)
     window.addEventListener('load', this.handleChangeOptionPosition)
     window.addEventListener('scroll', this.handleChangeOptionPosition)
   }
 
   componentWillUnmount() {
+    document.removeEventListener('touchstart', this._handleDetectTouchOutside)
     document.removeEventListener('mousedown', this._handleDetectClickOutside)
     window.removeEventListener('scroll', this.handleChangeOptionPosition)
   }
@@ -116,7 +129,7 @@ class Select extends Component {
       });
     }
   }
-  
+
   handleSelectOption = (currentValue) => {
     const {
       multiple,
@@ -154,24 +167,34 @@ class Select extends Component {
   }
 
   handleOpenMenu = () => {
+    const { onOpen } = this.props;
+    if (typeof onOpen === 'function') onOpen();
+
     this.setState({
       isOpen: true,
     });
   }
 
   handleCloseMenu = () => {
+    const { onClose } = this.props;
+    if (typeof onClose === 'function') onClose();
+
     this.setState({
       isOpen: false,
     });
   }
 
   handleSearchInputChange = (e) => {
-    this.handleFilterOption(e);
+    const newValue = e.target.value;
+    const { onInputChange } = this.props;
+    if (typeof onInputChange === 'function') onInputChange(newValue);
+
+    this.handleFilterOption(newValue);
   }
 
-  handleFilterOption = (e) => {
+  handleFilterOption = (value) => {
     this.setState({
-      searchValue: e.target.value,
+      searchValue: value,
     });
   }
 
@@ -216,6 +239,7 @@ class Select extends Component {
     else _targetIndex = toIndex;
 
     this.setState({
+      open: true,
       focusAtIndex: _targetIndex,
     });
   }
@@ -263,7 +287,37 @@ class Select extends Component {
     return defaultFilterOptions(options, searchValue);
   }
 
+  shouldRenderSearchInput = () => {
+    // TODO: Add case when searchInput shouldn't be rendered, and return false.
+    return true;
+  }
+
+  handleSeachInputFocus = () => {
+    this.setState({
+      isFocused: true,
+    });
+    const { onFocus } = this.props;
+    if (typeof onFocus === 'function') onFocus();
+  }
+
+  handleSeachInputBlur = () => {
+    this.setState({
+      isFocused: false,
+    });
+    const { onBlur } = this.props;
+    if (typeof onBlur === 'function') onBlur();
+  }
+
   renderSearchInput = () => {
+    if (!this.shouldRenderSearchInput) {
+      return (
+        <div
+          onFocus={this.handleSeachInputFocus}
+          onBlur={this.handleSeachInputBlur}
+        />
+      );
+    }
+
     return (
       <div className={`${PREFIX}-searchInput-wrapper`}>
         <input
@@ -272,6 +326,8 @@ class Select extends Component {
           autoFocus
           ref={c => this.searchInput = c}
           onChange={this.handleSearchInputChange}
+          onFocus={this.handleSeachInputFocus}
+          onBlur={this.handleSeachInputBlur}
         />
       </div>
     );
@@ -342,10 +398,22 @@ class Select extends Component {
     return (<Value value={getOptionValue(value)}>{ this.renderValueLabel(options, getOptionValue(value)) }</Value>);
   }
 
+  renderHiddenInput = (value) => {
+    return (
+      <input
+				type="hidden"
+				name={this.props.name}
+				value={value}
+				disabled={this.props.disabled}
+      />
+    );
+  }
+
   render() {
 
     const {
       isOpen,
+      isFocused,
       optionPosition,
     } = this.state;
 
@@ -361,10 +429,11 @@ class Select extends Component {
     return (
       <div className={`${PREFIX}-container`} ref={c => this.component = c}>
         <div
-          className={`${PREFIX}-control ${isOpen ? 'isfocus' : ''} ${disabled ? 'isdisabled' : ''}`}
+          className={`${PREFIX}-control ${isOpen ? 'isfocus' : ''} ${isFocused ? 'focused' : ''} ${disabled ? 'isdisabled' : ''}`}
           tabIndex={0}
           onClick={this.handleMouseDown}
         >
+          {this.renderHiddenInput(value)}
           {this.renderValue(options, value, multiple) || placeholder}
         </div>
         {

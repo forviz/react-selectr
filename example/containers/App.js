@@ -29,7 +29,10 @@ export default class App extends Component {
     value1: '',
     valueHero: '',
     valueMultiple: '',
+    valueCustomRender: '',
     valueCountry: '',
+    demoEventHookValue: '',
+    demoEventHookMessage: '',
   }
 
   handleChange = (key, value) => {
@@ -43,13 +46,16 @@ export default class App extends Component {
       value1,
       valueHero,
       valueMultiple,
+      valueCustomRender,
       valueCountry,
+      demoEventHookValue,
+      demoEventHookMessage,
     } = this.state;
 
     return (
       <div className="container">
         <h1>React-selectr</h1>
-
+        <input type="text" />
         <h2>Normal</h2>
         <Select
           value={value1}
@@ -61,7 +67,7 @@ export default class App extends Component {
         />
 
 
-      <h2>OptGroup (Dota2 Heroes)</h2>
+        <h2>OptGroup (Dota2 Heroes)</h2>
         <Select
           disabled
           value={valueHero}
@@ -82,13 +88,39 @@ export default class App extends Component {
           onChange={value => this.handleChange('valueMultiple', value)}
         />
 
-      <h2>Large DataSet (Countries)</h2>
+      <h2>CustomRenderOption (Dota2 Heroes)</h2>
+        <Select
+          value={valueCustomRender}
+          options={dotaHeroes}
+          onChange={value => this.handleChange('valueCustomRender', value)}
+          customRenderOption={(option) =>
+            <div>
+              <img src={`http://cdn.dota2.com/apps/dota2/images/heroes/${option.value}_sb.png`} width="50" style={{ marginRight: 5 }} />
+              {option.label}
+            </div>
+          }
+        />
+
+        <h2>Large DataSet (Countries)</h2>
         <Select
           value={valueCountry}
           options={countriesOptions}
           onChange={value => this.handleChange('valueCountry', value)}
         />
 
+        <h2>Event Hooks (Dota2 Heroes)</h2>
+        <div>{demoEventHookMessage}</div>
+        <Select
+          value={demoEventHookValue}
+          options={dotaHeroes}
+          onFocus={() => { console.log('focus'); this.setState({ demoEventHookMessage: 'focus' }) }}
+          onChange={value => this.handleChange('demoEventHookValue', value)}
+          onBlur={() => { console.log('blur'); this.setState({ demoEventHookMessage: 'blur' }) }}
+          onOpen={() => { console.log('open'); this.setState({ demoEventHookMessage: 'open' }) }}
+          onClose={() => { console.log('close'); this.setState({ demoEventHookMessage: 'close' }) }}
+          onInputChange={(value) => this.setState({ demoEventHookMessage: `inputChange ${value}` })}
+          onInputKeyDown={(e) => this.setState({ demoEventHookMessage: `inputKeydown ${e.keyCode}` })}
+        />
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
