@@ -69,6 +69,8 @@ class Select extends Component {
     onInputChange: PropTypes.func,
     onInputKeydown: PropTypes.func,
 
+    customRenderInput: PropTypes.func,
+
   }
 
   static defaultProps = {
@@ -264,6 +266,8 @@ class Select extends Component {
   }
 
   renderSearchInput = () => {
+    const { customRenderInput } = this.props;
+    if ( typeof customRenderInput === 'function' ) return customRenderInput();
     return (
       <div className={`${PREFIX}-searchInput-wrapper`}>
         <input
