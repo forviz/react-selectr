@@ -60,6 +60,7 @@ class Select extends Component {
     optionPosition: PropTypes.string,             // dropdown | dropup
     groups: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
+    keepSearchValue: PropTypes.bool,
 
     // Events
     filterOption: PropTypes.func,                 // function to filer an option
@@ -79,6 +80,7 @@ class Select extends Component {
     searchable: true,
     placeholder: 'Select...',
     optionPosition: false,
+    keepSearchValue: false,
   }
 
   state = {
@@ -91,7 +93,7 @@ class Select extends Component {
   /* Detect click Outside */
   _handleDetectClickOutside = (e) => {
     if (this.component.contains(e.target)) return;
-    this.setState({ isOpen: false });
+    this.handleCloseMenu();
   }
 
   componentDidMount() {
@@ -162,8 +164,10 @@ class Select extends Component {
   }
 
   handleCloseMenu = () => {
+    const { keepSearchValue } = this.props;
     this.setState({
       isOpen: false,
+      searchValue: keepSearchValue ? this.state.searchValue : '',
     });
   }
 
@@ -361,7 +365,7 @@ class Select extends Component {
       multiple,
       disabled,
     } = this.props;
-
+    console.log('state', this.state);
     return (
       <div className={`${PREFIX}-container`} ref={c => this.component = c}>
         <div
