@@ -11,6 +11,7 @@ class Option extends Component {
     option: PropTypes.shape({
       label: PropTypes.string,
       value: PropTypes.string,
+      disabled: PropTypes.bool,
     }),
 
     isFocus: PropTypes.bool,
@@ -56,10 +57,14 @@ class Option extends Component {
     this.props.onSelect(getOptionValue(this.props.option));
   }
 
+  optionRender = () => {
+    return this.props.customRenderOption || defaultRenderOption;
+  }
+
   render() {
     const { option, isFocus } = this.props;
 
-    const optionRenderer = this.props.customRenderOption || defaultRenderOption;
+    const optionRenderer = this.optionRender();
 
     return (
       <div
