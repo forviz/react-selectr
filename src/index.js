@@ -84,7 +84,7 @@ class Select extends Component {
     disabled: false,
     searchable: true,
     placeholder: 'Select...',
-    optionPosition: false,
+    optionPosition: 'dropdown', // false,
   }
 
   state = {

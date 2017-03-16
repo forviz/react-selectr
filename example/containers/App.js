@@ -124,28 +124,6 @@ export default class App extends Component {
           onInputChange={(value) => this.setState({ demoEventHookMessage: `inputChange ${value}` })}
           onInputKeyDown={(e) => this.setState({ demoEventHookMessage: `inputKeydown ${e.keyCode}` })}
         />
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
-      <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
       </div>
     );
   }
