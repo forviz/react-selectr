@@ -104,6 +104,17 @@ export default class App extends Component {
           onChange={value => this.handleChange('valueCountry', value)}
         />
 
+        <h2>Custom Input</h2>
+        <Select
+          disabled
+          value={valueHero}
+          options={dotaHeroes}
+          customRenderInput={() => 
+            <input type="text" defaultValue="pcious" />
+          }
+          onChange={value => this.handleChange('valueHero', value)}
+        />
+
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi hic eos quasi, odit ducimus harum necessitatibus fugiat error dolores quis ipsum voluptatum asperiores modi sit eius, possimus atque reiciendis, blanditiis.</h1>
