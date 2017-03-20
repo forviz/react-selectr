@@ -69,9 +69,9 @@ class Select extends Component {
 
     onInputChange: PropTypes.func,
     onInputKeydown: PropTypes.func,
-
+    customRenderOption: PropTypes.func,
+    customRenderOptionGroupLabel: PropTypes.func,
     customRenderInput: PropTypes.func,
-
   }
 
   static defaultProps = {
@@ -294,7 +294,10 @@ class Select extends Component {
       const groupOptions = _filter(filteredOptions, option => option.groupIndex === groupIndex);
       if (groupOptions.length > 0) {
         return (
-          <OptionGroup key={`optgroup-${label}-${groupIndex}`} label={label}>
+          <OptionGroup
+            key={`optgroup-${label}-${groupIndex}`} label={label}
+            customRenderOptionGroupLabel={this.props.customRenderOptionGroupLabel}
+          >
             { _map(groupOptions, option => this.renderOption(option)) }
           </OptionGroup>
         );
@@ -305,20 +308,20 @@ class Select extends Component {
   }
 
   renderOption = (option) => {
-    const _label = option.label || option;
-    const _value = option.value || option;
+
     const index = option.optionIndex;
+    const _value = getOptionValue(option);
+
     const { focusAtIndex } = this.state;
     return (
       <Option
         key={`option-${_value}-${index}`}
         isFocus={focusAtIndex === index}
         index={index}
-        label={_label}
-        value={_value}
+        option={option}
         onFocus={this.focusAtOption}
         onSelect={this.handleSelectOption}
-        on
+        customRenderOption={this.props.customRenderOption}
       />
     );
   }
